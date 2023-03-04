@@ -20,3 +20,25 @@ class conexion:
         self.database.close()
 
         return resultset
+    
+    def analistasBi(self, area):
+        self.cursor = self.database.cursor()
+        sql = '''SELECT * FROM analistasbi WHERE AREA = "{}" AND ROL = "ANALISTA"; '''.format(area)
+        self.cursor.execute(sql)
+        resultset = self.cursor.fetchall()
+        self.cursor.close()
+        self.database.commit()
+        self.database.close()
+
+        return resultset
+    
+    def coordinadoresBi(self):
+        self.cursor = self.database.cursor()
+        sql = 'SELECT * FROM analistasbi WHERE ROL = "COORDINADOR"; '
+        self.cursor.execute(sql)
+        resultset = self.cursor.fetchall()
+        self.cursor.close()
+        self.database.commit()
+        self.database.close()
+
+        return resultset
