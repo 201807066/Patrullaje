@@ -42,3 +42,69 @@ class conexion:
         self.database.close()
 
         return resultset
+    
+    def analistasCorpBi(self, corp):
+        self.cursor = self.database.cursor()
+        sql = '''SELECT * FROM analistasbi WHERE CORPORATIVO = "{}"; '''.format(corp)
+        self.cursor.execute(sql)
+        resultset = self.cursor.fetchall()
+        self.cursor.close()
+        self.database.commit()
+        self.database.close()
+
+        return resultset
+    
+    def registrarAnalista(self, nombre, corp, ant, rol, area):
+        self.cursor = self.database.cursor()
+        sql = '''INSERT INTO analistasbi(NOMBRE, CORPORATIVO, ANTIGUEDAD, ROL, AREA)
+                 VALUES('{}', '{}', '{}', '{}', '{}')'''.format(nombre, corp, ant, rol, area)
+        
+        self.cursor.execute(sql)
+        self.cursor.fetchall()
+        self.cursor.close()
+        self.database.commit()
+        self.database.close()
+
+    def eliminarAnalista(self, corp):
+        self.cursor = self.database.cursor()
+        sql = '''DELETE FROM analistasbi WHERE CORPORATIVO = "{}";'''.format(corp)
+
+        self.cursor.execute(sql)
+        self.cursor.fetchall()
+        self.cursor.close()
+        self.database.commit()
+        self.database.close()
+
+    def agregarMotivo(self, motivo):
+        self.cursor = self.database.cursor()
+        sql = '''INSERT INTO motivos(MOTIVO)
+                 VALUES('{}')'''.format(motivo)
+        
+        self.cursor.execute(sql)
+        self.cursor.fetchall()
+        self.cursor.close()
+        self.database.commit()
+        self.database.close()
+
+    def descripcionMotivo(self):
+        self.cursor = self.database.cursor()
+        sql = '''SELECT * FROM motivos; '''
+        self.cursor.execute(sql)
+        resultset = self.cursor.fetchall()
+        self.cursor.close()
+        self.database.commit()
+        self.database.close()
+
+        return resultset
+    
+    def eliminarMotivo(self, motivo):
+        self.cursor = self.database.cursor()
+        sql = '''DELETE FROM motivos WHERE MOTIVO = "{}";'''.format(motivo)
+
+        self.cursor.execute(sql)
+        self.cursor.fetchall()
+        self.cursor.close()
+        self.database.commit()
+        self.database.close()
+
+        

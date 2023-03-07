@@ -1,7 +1,10 @@
+import tkinter
 from tkinter import *
 from tkinter import ttk, messagebox
 import datetime
 from conexion import conexion
+
+from ventanas import login
 
 class VentanaPatrullaje:
 
@@ -78,6 +81,10 @@ class VentanaPatrullaje:
         self.lblAutorizado.config(bg="#dcffff", font=("Comic Sans MS", 11))
         self.lblAutorizadoSINO = Label(self.marcoPrincipal, text="SI/NO")
         self.lblAutorizadoSINO.config(bg="#dcffff", font=("Comic Sans MS", 15, 'bold'))
+        self.lblMotivo = Label(self.marcoPrincipal, text="Motivo")
+        self.lblMotivo.config(bg="#dcffff", font=("Comic Sans MS", 12))
+        self.cbxMotivo = ttk.Combobox(self.marcoPrincipal, background="#F4F4F4", state="readonly", width=25, values=["Opc1", "Opc2", "Opc3"])
+        self.cbxMotivo.config(font=("Comic Sans MS", 12), width=15)
         self.lblCodigoConfirmacion = Label(self.marcoPrincipal, text="Código de confirmación")
         self.lblCodigoConfirmacion.config(bg="#dcffff", font=("Comic Sans MS", 12))
         self.lblJefePatrullero = Label(self.marcoPrincipal, text="(Jefe / Patrullero)")
@@ -146,34 +153,36 @@ class VentanaPatrullaje:
         self.btnDetalles.place(x=210, y=230)
         self.lblAutorizado.place(x=300, y=175)
         self.lblAutorizadoSINO.place(x=380, y=225)
-        self.lblCodigoConfirmacion.place(x=5 , y=290)
-        self.lblJefePatrullero.place(x=20 , y=315)
-        self.txtCodigoConfirmacion.place(x=208, y=305)
-        self.lblProveedor.place(x=360, y=280)
-        self.cbxProveedor.place(x=340, y=305)
+        self.lblMotivo.place(x=125, y=285)
+        self.cbxMotivo.place(x=200, y=285)
+        self.lblCodigoConfirmacion.place(x=5 , y=330)
+        self.lblJefePatrullero.place(x=20 , y=355)
+        self.txtCodigoConfirmacion.place(x=208, y=345)
+        self.lblProveedor.place(x=360, y=320)
+        self.cbxProveedor.place(x=340, y=345)
 
          #Widgets -----> Apartado 3
-        self.lblHoraSolicitud.place(x=50 , y=375)
-        self.txtHoraSolicitud.place(x=80 , y=430)
-        self.lblHoraLlegada.place(x=90 , y=460) 
-        self.txtHoraLlegada.place(x=80 , y=490)
-        self.lblHoraRetiro.place(x=90 , y=520)
-        self.txtHoraRetiro.place(x=80 , y=550)
+        self.lblHoraSolicitud.place(x=50 , y=405)
+        self.txtHoraSolicitud.place(x=80 , y=460)
+        self.lblHoraLlegada.place(x=90 , y=490) 
+        self.txtHoraLlegada.place(x=80 , y=520)
+        self.lblHoraRetiro.place(x=90 , y=550)
+        self.txtHoraRetiro.place(x=80 , y=580)
 
         #Widgets -----> Apartado 4
-        self.lblNombreOperador.place(x=365, y=385)
-        self.txtNombreOperador.place(x=325,y=430)
-        self.lblNumeroBoleta.place(x=365, y=460)
-        self.txtNumeroBoleta.place(x=325,y=490)
-        self.lblNombrePatrullero.place(x=365,y=520)
-        self.txtNombrePatrullero.place(x=325,y=550)
+        self.lblNombreOperador.place(x=365, y=415)
+        self.txtNombreOperador.place(x=325,y=460)
+        self.lblNumeroBoleta.place(x=365, y=490)
+        self.txtNumeroBoleta.place(x=325,y=520)
+        self.lblNombrePatrullero.place(x=365,y=550)
+        self.txtNombrePatrullero.place(x=325,y=580)
 
         #Separador -----> Apartado 1
         self.separador1h.place(relx=0, rely=0.175, relheight=0.002, relwidth=0.420)
         self.separador1v.place(relx=0.42, rely=0.052, relheight=1, relwidth=0.002)
-        self.separador2h.place(relx=0, rely=0.475, relheight=0.002, relwidth=0.420)
+        self.separador2h.place(relx=0, rely=0.525, relheight=0.002, relwidth=0.420)
 
-        self.separador2v.place(relx=0.21, rely=0.475, relheight=0.4, relwidth=0.002)
+        self.separador2v.place(relx=0.21, rely=0.525, relheight=0.4, relwidth=0.002)
         self.coordinadorBi()
         
         self.ventana.mainloop()
@@ -248,5 +257,5 @@ class VentanaPatrullaje:
             self.cbxCoordinador["values"] = coordinadores
 
     def admonAnalistas(self):
-        messagebox.showinfo("hola")
-            
+        self.ventana.withdraw()
+        self.login = login.login().muestraVentana()
