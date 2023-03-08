@@ -75,10 +75,21 @@ class conexion:
         self.database.commit()
         self.database.close()
 
+    def buscarMotivo(self, motivo):
+        self.cursor = self.database.cursor()
+        sql = '''SELECT * FROM motivos WHERE MOTIVO = "{}"; '''.format(motivo)
+        self.cursor.execute(sql)
+        resultset = self.cursor.fetchall()
+        self.cursor.close()
+        self.database.commit()
+        self.database.close()
+
+        return resultset
+
     def agregarMotivo(self, motivo):
         self.cursor = self.database.cursor()
         sql = '''INSERT INTO motivos(MOTIVO)
-                 VALUES('{}')'''.format(motivo)
+                 VALUE('{}')'''.format(motivo)
         
         self.cursor.execute(sql)
         self.cursor.fetchall()

@@ -83,7 +83,7 @@ class VentanaPatrullaje:
         self.lblAutorizadoSINO.config(bg="#dcffff", font=("Comic Sans MS", 15, 'bold'))
         self.lblMotivo = Label(self.marcoPrincipal, text="Motivo")
         self.lblMotivo.config(bg="#dcffff", font=("Comic Sans MS", 12))
-        self.cbxMotivo = ttk.Combobox(self.marcoPrincipal, background="#F4F4F4", state="readonly", width=25, values=["Opc1", "Opc2", "Opc3"])
+        self.cbxMotivo = ttk.Combobox(self.marcoPrincipal, background="#F4F4F4", state="readonly", width=25)
         self.cbxMotivo.config(font=("Comic Sans MS", 12), width=15)
         self.lblCodigoConfirmacion = Label(self.marcoPrincipal, text="Código de confirmación")
         self.lblCodigoConfirmacion.config(bg="#dcffff", font=("Comic Sans MS", 12))
@@ -183,8 +183,9 @@ class VentanaPatrullaje:
         self.separador2h.place(relx=0, rely=0.525, relheight=0.002, relwidth=0.420)
 
         self.separador2v.place(relx=0.21, rely=0.525, relheight=0.4, relwidth=0.002)
+
+        self.motivosPatrulla()
         self.coordinadorBi()
-        
         self.ventana.mainloop()
 
     def buscarPuntoBi(self):
@@ -231,6 +232,13 @@ class VentanaPatrullaje:
                 analistas.append(i[1])
             self.cbxOperador["values"] = analistas
 
+            coordinadores = []
+
+            self.analistas = conexion.conexion().coordinadoresBi()
+            for i in self.analistas:
+                coordinadores.append(i[1])
+                self.cbxCoordinador["values"] = coordinadores
+
         elif self.opc.get() == 2:
             analistas = []
             self.cbxOperador["values"] = ""
@@ -238,6 +246,12 @@ class VentanaPatrullaje:
             for i in self.analistas:
                 analistas.append(i[1])
             self.cbxOperador["values"] = analistas
+            coordinadores = []
+
+            self.analistas = conexion.conexion().coordinadoresBi()
+            for i in self.analistas:
+                coordinadores.append(i[1])
+                self.cbxCoordinador["values"] = coordinadores
 
         elif self.opc.get() == 3:
             analistas = []
@@ -246,6 +260,13 @@ class VentanaPatrullaje:
             for i in self.analistas:
                 analistas.append(i[1])
             self.cbxOperador["values"] = analistas
+
+            coordinadores = []
+
+            self.analistas = conexion.conexion().coordinadoresBi()
+            for i in self.analistas:
+                coordinadores.append(i[1])
+                self.cbxCoordinador["values"] = coordinadores
 
 
     def coordinadorBi(self):
@@ -256,6 +277,18 @@ class VentanaPatrullaje:
             coordinadores.append(i[1])
             self.cbxCoordinador["values"] = coordinadores
 
+    def motivosPatrulla(self):
+        motivos = []
+
+        self.motivos = conexion.conexion().descripcionMotivo()
+
+        for i in self.motivos:
+            motivos.append(i[1])
+        self.cbxMotivo["values"] = motivos
+
     def admonAnalistas(self):
-        self.ventana.withdraw()
-        self.login = login.login().muestraVentana()
+        self.minimizaVentana()
+        self.login = login.login(self.ventana).muestraVentana()
+
+    def minimizaVentana(self):
+        self.ventana.iconify()

@@ -4,12 +4,11 @@ from  ventanas import administrarUsuarios, ventanaPatrullaje
 
 class login:
 
-    def __init__(self):
-        self.ventana = Tk()
+    def __init__(self, VentanaPatrullaje):
+        self.ventana = Toplevel(VentanaPatrullaje)
         self.ventana.title("Inicio de sesión administrador")
         self.ventana.resizable(False, False)
         self.ventana.geometry("400x200")
-        self.ventana.eval('tk::PlaceWindow . center')
 
         #Variables
         self.user = StringVar()
@@ -46,7 +45,7 @@ class login:
 
     def admonAnalistas(self):
         self.ventana.withdraw()
-        self.analistas = administrarUsuarios.admonUsuarios().ventanaUsuario()
+        self.analistas = administrarUsuarios.admonUsuarios(self.ventana).ventanaUsuario()
 
     def cancelar(self):
         self.ventana.destroy()

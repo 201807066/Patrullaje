@@ -1,11 +1,13 @@
 from tkinter import *
 from tkinter import ttk, messagebox
 from conexion import conexion
+from ventanas import ventanaPatrullaje
+
 
 class admonUsuarios:
 
-    def __init__(self):
-        self.analistas = Tk()
+    def __init__(self, VentanaPatrullaje):
+        self.analistas = Toplevel(VentanaPatrullaje)
         self.analistas.title("CRUD Analistas")
         self.analistas.resizable(False, False)
         self.analistas.geometry("500x585")
@@ -74,12 +76,13 @@ class admonUsuarios:
         self.btnAgregar.config(bg="#3266B4", foreground="white", width=7, font=("Comic Sans MS", 12))
         self.btnEliminarMotivo = Button(self.marco, text="Eliminar", command=self.eliminarMotivo)
         self.btnEliminarMotivo.config(bg="#3266B4", foreground="white", width=7, font=("Comic Sans MS", 12))
-        self.btnVolver = Button(self.marco, text="ACTUALIZAR", command=self.eliminarAnalistas)
-        self.btnVolver.config(bg="#3266B4", foreground="white", width=7, font=("Comic Sans MS", 12))
+        self.btnVolver = Button(self.marco, text="Cerrar Sesion", command=self.volverVentanaPatrullaje)
+        self.btnVolver.config(bg="#3266B4", foreground="white", width=15, font=("Comic Sans MS", 12))
 
         self
         #separador-----> Apartado 1
         self.separador1h = ttk.Separator(self.marco, orient="horizontal")
+
 
 
     def ventanaUsuario(self):
@@ -151,7 +154,7 @@ class admonUsuarios:
             self.registrar = conexion.conexion().registrarAnalista(self.nombre.get(), self.corp.get(), self.ant.get(), self.cbxRol.get(), self.cbxArea.get())
             messagebox.showinfo("Registro correcto", "Se registro de manera exitoso al analista {}".format(self.nombre.get()))
         else:
-            messagebox.showerror("Error el registro", "El corp {} ya se encuentra registrado como analista de monitoreo".format(self.corp.get()))
+            messagebox.showerror("Error en el registro", "El corp {} ya se encuentra registrado como analista de monitoreo".format(self.corp.get()))
 
     #Eliminar datos del analista 
     def eliminarAnalistas(self):
@@ -159,11 +162,14 @@ class admonUsuarios:
           self.txtBCorp.delete(0, "end")
           messagebox.showinfo("Usuario eliminado", "Se elimino correctamente el usuario")
 
+    #Motivos del por cual se enviaron las patrullas CRUD
     def agregarMotivo(self):
-        self.motivo = conexion.conexion().agregarMotivo(self.motivo.get())
-
-
-
+       self.analista = conexion.conexion().buscarMotivo(self.motivo.get())
+       if len(self.analista) == 0:
+            self.addMotivo = conexion.conexion().agregarMotivo(self.motivo.get())
+            self.txtMotivo.delete(0, "end")
+       else:
+           messagebox.showerror("Error en el registro", "Motivo ya registrado en el sistema")
 
     def descripcionMotivo(self):
         motivos = []
@@ -176,5 +182,14 @@ class admonUsuarios:
 
     def eliminarMotivo(self):
         self.deleteMotivo = conexion.conexion().eliminarMotivo(self.cbxDescripcion.get())
+        self.index = self.cbxDescripcion.current()
+        self.values = self.cbxDescripcion["values"]
+
+        self.values = (*self.values[:self.index], *self.values[self.index+1:])
+        self.cbxDescripcion["values"] = self.values
         messagebox.showinfo("Motivo eliminado", "Se elimino correctamente el motivo de patrullaje")
-        self.cbxDescripcion.delete(0, "end")
+
+
+    def volverVentanaPatrullaje(self):
+        self.analistas.withdraw()
+        
