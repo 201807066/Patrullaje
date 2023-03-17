@@ -13,7 +13,7 @@ class VentanaPatrullaje:
         self.ventana = Tk()
         self.ventana.title('Patrullaje Bi')
         self.ventana.resizable(False, False)
-        self.ventana.geometry("1350x750")
+        self.ventana.geometry("1350x650")
 
         #Variables
         fecha = datetime.datetime.now()
@@ -22,16 +22,20 @@ class VentanaPatrullaje:
 
         self.codigo = StringVar()
         self.codigoConfirmacion = StringVar()
-        self.autorizado = StringVar()
 
         self.horaSolicitud = StringVar()
         self.horaLlegada = StringVar()
         self.horaRetiro = StringVar()
-        self.codigoConfirmacion = StringVar()
         
         self.nombreOperador = StringVar()
         self.numeroBoleta = StringVar()
         self.nombrePatrullero = StringVar()
+
+        self.observacionServicio = StringVar()
+        self.descripcion = StringVar()
+
+        #Contador 
+        self.i = 1
 
         #Barra de menu
         self.barraMenu = Menu()
@@ -124,12 +128,43 @@ class VentanaPatrullaje:
         self.txtNombrePatrullero = Entry(self.marcoPrincipal, textvariable=self.nombrePatrullero)
         self.txtNombrePatrullero.config(bg="#F4F4F4", font=("Comic Sans MS", 12), width=20)
 
+         #Widgets -----> Apartado 5
+
+        self.lblObservacionServicio = Label(self.marcoPrincipal, text="Observaciones del servicio")
+        self.lblObservacionServicio.config(bg="#dcffff", font=("Comic Sans MS", 12, "bold"))
+        self.txtObservacionServicio = Text(self.marcoPrincipal)
+        self.txtObservacionServicio.config(bg="#F4F4F4", font=("Comic Sans MS", 12), height = 13, width = 40)
+        self.lblDescripcion = Label(self.marcoPrincipal, text="Descripción")
+        self.lblDescripcion.config(bg="#dcffff", font=("Comic Sans MS", 12, "bold"))
+        self.txtDescripcion = Text(self.marcoPrincipal)
+        self.txtDescripcion.config(bg="#F4F4F4", font=("Comic Sans MS", 12), height = 8, width = 40)
+
+        self.btnAceptar = Button(self.marcoPrincipal, text="Aceptar", command=self.addPatrulla)
+        self.btnAceptar.config(bg="#3266B4", foreground="white", width=7, font=("Comic Sans MS", 12))
+        self.btnEliminar = Button(self.marcoPrincipal, text="Eliminar", command=self.mostrarPatrullas)
+        self.btnEliminar.config(bg="#3266B4", foreground="white", width=7, font=("Comic Sans MS", 12))
+
+        #Creacion de la tabla de patrullas enviadas
+        columnas = ('#0', '#1')
+        self.tabla = ttk.Treeview(self.marcoPrincipal, height=20,  columns=columnas)
+        self.tabla.column('#0', width=100)       
+        self.tabla.heading('#0', text='Cod.', anchor=CENTER)
+        self.tabla.column('#1', width=100)
+        self.tabla.heading('#1', text='Motivo', anchor=CENTER)
+        self.tabla.column('#2', width=100)        
+        self.tabla.heading('#2', text='Operador', anchor=CENTER)
+
+        self.lblPatrullasEnviadas = Label(self.marcoPrincipal, text="Patrullas enviadas")
+        self.lblPatrullasEnviadas.config(bg="#dcffff", font=("Comic Sans MS", 12, "bold"))
+
         #separador-----> Apartado 1
         self.separador1h = ttk.Separator(self.marcoPrincipal, orient="horizontal")
         self.separador1v = ttk.Separator(self.marcoPrincipal, orient="vertical")
         #separador-----> Apartado 2
         self.separador2h = ttk.Separator(self.marcoPrincipal, orient="horizontal")
         self.separador2v = ttk.Separator(self.marcoPrincipal, orient="vertical")
+
+        self.separador3v = ttk.Separator(self.marcoPrincipal, orient="vertical")
         
 
     def mostrarVentana(self):
@@ -177,12 +212,26 @@ class VentanaPatrullaje:
         self.lblNombrePatrullero.place(x=365,y=550)
         self.txtNombrePatrullero.place(x=325,y=580)
 
+        #Widgets -----> Apartado 5
+        self.lblObservacionServicio.place(x=700,y=50)
+        self.txtObservacionServicio.place(x=588,y=85)
+        self.lblDescripcion.place(x=750,y=400)
+        self.txtDescripcion.place(x=588,y=437)
+
+        self.btnAceptar.place(x=1100,y=600)
+        self.btnEliminar.place(x=1200,y=600)
+
+        # ** Creacion de la tabla con los datos de las patrullas enviadas **
+        self.tabla.place(x=1032, y=95)
+        self.lblPatrullasEnviadas.place(x=1125, y=60)
+
         #Separador -----> Apartado 1
         self.separador1h.place(relx=0, rely=0.175, relheight=0.002, relwidth=0.420)
         self.separador1v.place(relx=0.42, rely=0.052, relheight=1, relwidth=0.002)
         self.separador2h.place(relx=0, rely=0.525, relheight=0.002, relwidth=0.420)
 
         self.separador2v.place(relx=0.21, rely=0.525, relheight=0.4, relwidth=0.002)
+        self.separador3v.place(relx=0.75, rely=0.052, relheight=1, relwidth=0.002)
 
         self.motivosPatrulla()
         self.coordinadorBi()
@@ -292,3 +341,29 @@ class VentanaPatrullaje:
 
     def minimizaVentana(self):
         self.ventana.iconify()
+
+    def addPatrulla(self):
+        self.cantidadPatrullas()
+        self.i += 1
+        fecha = datetime.datetime.now()
+        fechaAux = str(fecha.year) +"-"+ str(fecha.month) +"-"+ str(fecha.day)
+        self.patrulla = conexion.conexion().addPatrulla(self.i, fechaAux, self.codigo.get())
+
+        self.mostrarPatrullas()
+
+        
+    def cantidadPatrullas(self):
+        self.mPatrulla = conexion.conexion().mostrarPatrulla()
+        self.i = len(self.mPatrulla)
+
+         
+
+    def mostrarPatrullas(self):
+        registros = self.tabla.get_children()
+        for registro in registros:
+            self.tabla.delete(registro)
+        
+        self.mPatrulla = conexion.conexion().mostrarPatrulla()
+
+        for i in self.mPatrulla:
+            self.tabla.insert("", 'end', text=i[0], values=(i[2], i[2]))

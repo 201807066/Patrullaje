@@ -118,4 +118,27 @@ class conexion:
         self.database.commit()
         self.database.close()
 
+    def addPatrulla(self, no, fecha, cod):
+        self.cursor = self.database.cursor()
+        sql = '''INSERT INTO patrullaje(No, Fecha, Codigo)
+                VALUES('{}', '{}', '{}')'''.format(no, fecha, cod)
+        
+        self.cursor.execute(sql)
+        self.cursor.fetchall()
+        self.cursor.close()
+        self.database.commit()
+        self.database.close()
+
+    def mostrarPatrulla(self):
+        self.cursor = self.database.cursor()
+        sql = '''SELECT * FROM patrullaje; '''
+        self.cursor.execute(sql)
+        resultset = self.cursor.fetchall()
+        self.cursor.close()
+        self.database.commit()
+        self.database.close()
+
+        return resultset
+
+
         
