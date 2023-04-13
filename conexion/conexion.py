@@ -21,6 +21,18 @@ class conexion:
 
         return resultset
     
+    def buscarAnalista(self, corp, ant):
+        self.cursor = self.database.cursor()
+        sql = '''SELECT * FROM analistasbi WHERE CORPORATIVO = "{}" AND ANTIGUEDAD = "{}"; '''.format(corp, ant)
+        self.cursor.execute(sql)
+        resultset = self.cursor.fetchall()
+        self.cursor.close()
+        self.database.commit()
+        self.database.close()
+
+        return resultset
+
+    
     def analistasBi(self, area):
         self.cursor = self.database.cursor()
         sql = '''SELECT * FROM analistasbi WHERE AREA = "{}" AND ROL = "ANALISTA"; '''.format(area)
@@ -118,10 +130,16 @@ class conexion:
         self.database.commit()
         self.database.close()
 
-    def addPatrulla(self, no, fecha, cod):
+    def addPatrulla(self, no, fecha, cod, centroCosto, puntoBi, 
+                    nombreBi, ubicaion, direccionBi, motivo, autorizadoAbas, 
+                    codigoConfirmacion, proveedor, tiempoRespuesta, horaSolicitudCentral):
         self.cursor = self.database.cursor()
-        sql = '''INSERT INTO patrullaje(No, Fecha, Codigo)
-                VALUES('{}', '{}', '{}')'''.format(no, fecha, cod)
+        sql = '''INSERT INTO patrullaje(No, Fecha, Codigo, CentroCosto, PuntoBi, 
+                                        Nombre, Ubicación, Dirección, Motivo, AutorizadoAbastecimiento, 
+                                        CodigoConfirmacion, Proveedor, TiempoRespuesta, HoraSolicitudCentral)
+                VALUES('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')'''.format(no, fecha, cod, centroCosto, puntoBi,
+                                                                                                          nombreBi, ubicaion, direccionBi, motivo, autorizadoAbas,
+                                                                                                            codigoConfirmacion, proveedor, tiempoRespuesta, horaSolicitudCentral)
         
         self.cursor.execute(sql)
         self.cursor.fetchall()

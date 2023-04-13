@@ -114,7 +114,7 @@ class admonUsuarios:
 
         self.btnAgregar.place(x=385,y=425)
         self.btnEliminarMotivo.place(x=385,y=475)
-        self.btnVolver.place(x=385,y=525)
+        self.btnVolver.place(x=325,y=525)
 
         #Separador -----> Apartado 1
         self.separador1h.place(relx=0, rely=0.5, relheight=0.002, relwidth=1)
