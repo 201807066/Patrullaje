@@ -39,10 +39,10 @@ class VentanaPatrullaje:
         self.direccion = StringVar()
         self.autorizado = StringVar()
         self.tiempoRespuesta = StringVar()
-        self.tiempoRealRespuesta = StringVar()
-        self.excedenteTiempo = StringVar()
+        self.tiempoRealRespuesta = ""
+        self.excedenteTiempo = ""
         self.retiro = StringVar()
-        self.duracionServicio = StringVar()
+        self.duracionServicio = ""
 
 
         
@@ -370,15 +370,19 @@ class VentanaPatrullaje:
             self.i += 1
 
             #Se calcula el tiempo de respuesta en que llego la patrulla
-            self.tiempoRealRespuesta = str(self.restarHoras(self.txtHoraLlegada.get(), self.txtHoraSolicitud.get()))
+            if self.txtHoraLlegada.get()=="":
+                pass
+            else:   
+                self.tiempoRealRespuesta = str(self.restarHoras(self.txtHoraLlegada.get(), self.txtHoraSolicitud.get()))
 
-            #Se calcula el tiempo de excedente de la patrualla
-            self.excedenteTiempo = str(self.restarHoras(self.tiempoRealRespuesta[:-3], self.tiempoRespuesta[:-3]))
+                #Se calcula el tiempo de excedente de la patrualla
+                self.excedenteTiempo = str(self.restarHoras(self.tiempoRealRespuesta[:-3], self.tiempoRespuesta[:-3]))
 
-            if self.excedenteTiempo < "00:00:00":
-                self.excedenteTiempo = "00:00:00"
+                if self.excedenteTiempo < "00:00:00":
+                    self.excedenteTiempo = "00:00:00"
 
-            self.duracionServicio = str(self.restarHoras(self.txtHoraRetiro.get(), self.txtHoraLlegada.get()))
+                if self.txtHoraRetiro.get() != "":             
+                    self.duracionServicio = str(self.restarHoras(self.txtHoraRetiro.get(), self.txtHoraLlegada.get()))
 
 
 
@@ -392,7 +396,7 @@ class VentanaPatrullaje:
                                                             self.duracionServicio, self.txtNombreOperador.get(), self.txtNumeroBoleta.get(), 
                                                             self.txtNombrePatrullero.get(), self.txtObservacionServicio.get(1.0, END+"-1c"), self.txtDescripcion.get(1.0, END+"-1c"))
             self.mostrarPatrullas()
-            #self.limpiarCampos()
+            self.limpiarCampos()
        
     def cantidadPatrullas(self):
         self.mPatrulla = conexion.conexion().mostrarPatrulla()
@@ -412,7 +416,8 @@ class VentanaPatrullaje:
         self.mPatrulla = conexion.conexion().mostrarPatrulla()
 
         for i in self.mPatrulla:
-            self.tabla.insert("", 'end', text=i[0], values=(i[2], i[2]))
+            self.tabla.insert("", 'end', text=i[0], values=(i[2], i[2]), tags=('pendiente'))
+            self.tabla.tag_configure('pendiente', background='#20B2AA')
 
     def limpiarCampos(self):
         self.lblNombreBi['text'] = "Nombre: "
