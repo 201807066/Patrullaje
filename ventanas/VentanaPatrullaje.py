@@ -39,6 +39,10 @@ class VentanaPatrullaje:
         self.direccion = StringVar()
         self.autorizado = StringVar()
         self.tiempoRespuesta = StringVar()
+        self.tiempoRealRespuesta = StringVar()
+        self.excedenteTiempo = StringVar()
+        self.retiro = StringVar()
+        self.duracionServicio = StringVar()
 
 
         
@@ -86,7 +90,7 @@ class VentanaPatrullaje:
 
 
         #Widgets -----> Apartado 2
-        self.lblNombreBi = Label(self.marcoPrincipal, text="Nombre: Este es un ejemplo de una agencia con texto largo (A080)")
+        self.lblNombreBi = Label(self.marcoPrincipal, text="Nombre:")
         self.lblNombreBi.config(bg="#dcffff", font=("Comic Sans MS", 12, 'bold'))
         self.lblCodigo = Label(self.marcoPrincipal, text="Código:")
         self.lblCodigo.config(bg="#dcffff", font=("Comic Sans MS", 12))
@@ -245,6 +249,7 @@ class VentanaPatrullaje:
         self.separador3v.place(relx=0.75, rely=0.052, relheight=1, relwidth=0.002)
 
         self.motivosPatrulla()
+        self.mostrarPatrullas()
         self.ventana.mainloop()
 
 
@@ -363,13 +368,31 @@ class VentanaPatrullaje:
         else:
             self.cantidadPatrullas()
             self.i += 1
+
+            #Se calcula el tiempo de respuesta en que llego la patrulla
+            self.tiempoRealRespuesta = str(self.restarHoras(self.txtHoraLlegada.get(), self.txtHoraSolicitud.get()))
+
+            #Se calcula el tiempo de excedente de la patrualla
+            self.excedenteTiempo = str(self.restarHoras(self.tiempoRealRespuesta[:-3], self.tiempoRespuesta[:-3]))
+
+            if self.excedenteTiempo < "00:00:00":
+                self.excedenteTiempo = "00:00:00"
+
+            self.duracionServicio = str(self.restarHoras(self.txtHoraRetiro.get(), self.txtHoraLlegada.get()))
+
+
+
             fecha = datetime.datetime.now()
             fechaAux = str(fecha.year) +"-"+ str(fecha.month) +"-"+ str(fecha.day)
             self.patrulla = conexion.conexion().addPatrulla(self.i, fechaAux, self.codigoBi, self.centroCosto, self.puntoBi, 
                                                             self.nombreBi, self.ubicacion, self.direccion, self.cbxMotivo.get(), 
                                                             self.autorizado, self.txtCodigoConfirmacion.get(), self.cbxProveedor.get(), 
-                                                            self.tiempoRespuesta, self.txtHoraSolicitud.get())
+                                                            self.tiempoRespuesta, self.txtHoraSolicitud.get(), self.txtHoraLlegada.get(), 
+                                                            self.tiempoRealRespuesta, self.excedenteTiempo, self.txtHoraRetiro.get(), 
+                                                            self.duracionServicio, self.txtNombreOperador.get(), self.txtNumeroBoleta.get(), 
+                                                            self.txtNombrePatrullero.get(), self.txtObservacionServicio.get(1.0, END+"-1c"), self.txtDescripcion.get(1.0, END+"-1c"))
             self.mostrarPatrullas()
+            #self.limpiarCampos()
        
     def cantidadPatrullas(self):
         self.mPatrulla = conexion.conexion().mostrarPatrulla()
@@ -391,6 +414,23 @@ class VentanaPatrullaje:
         for i in self.mPatrulla:
             self.tabla.insert("", 'end', text=i[0], values=(i[2], i[2]))
 
+    def limpiarCampos(self):
+        self.lblNombreBi['text'] = "Nombre: "
+        self.lblAutorizadoSINO['text'] = "N/A"
+        self.lblAutorizadoSINO.config(fg="#000000", font=("Comic Sans MS", 15, 'bold'))
+        self.txtCodigo.delete(0, END)
+        self.txtCodigo.focus()
+        self.txtCodigoConfirmacion.delete(0, END)
+        self.txtCodigoConfirmacion.insert(END, "N/A");
+        self.txtHoraSolicitud.delete(0, END)
+        self.txtHoraLlegada.delete(0, END)
+        self.txtHoraRetiro.delete(0, END)
+        self.txtNombreOperador.delete(0, END)
+        self.txtNumeroBoleta.delete(0, END)
+        self.txtNombrePatrullero.delete(0, END)
+
+        self.txtObservacionServicio.delete(1.0, END)
+        self.txtDescripcion.delete(1.0, END)
 
     def editarPatrulla(self):
         pass

@@ -132,14 +132,22 @@ class conexion:
 
     def addPatrulla(self, no, fecha, cod, centroCosto, puntoBi, 
                     nombreBi, ubicaion, direccionBi, motivo, autorizadoAbas, 
-                    codigoConfirmacion, proveedor, tiempoRespuesta, horaSolicitudCentral):
+                    codigoConfirmacion, proveedor, tiempoRespuesta, horaSolicitudCentral, horaLlegada, 
+                    tiempoRealRespuesta, excedenteTiempo, retiro, duracionServicio, operadorCRC, 
+                    numeroBoleta, nombrePatrullero, observacionServicio, descripcion):
         self.cursor = self.database.cursor()
         sql = '''INSERT INTO patrullaje(No, Fecha, Codigo, CentroCosto, PuntoBi, 
                                         Nombre, Ubicación, Dirección, Motivo, AutorizadoAbastecimiento, 
-                                        CodigoConfirmacion, Proveedor, TiempoRespuesta, HoraSolicitudCentral)
-                VALUES('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')'''.format(no, fecha, cod, centroCosto, puntoBi,
-                                                                                                          nombreBi, ubicaion, direccionBi, motivo, autorizadoAbas,
-                                                                                                            codigoConfirmacion, proveedor, tiempoRespuesta, horaSolicitudCentral)
+                                        CodigoConfirmacion, Proveedor, TiempoRespuesta, HoraSolicitudCentral, HoraLlegada,
+                                        TiempoRealRespuesta, ExcedenteTiempo, Retiro, DuracionServicio, OperadorCRC, 
+                                        NumeroBoleta, NombrePatrullero, ObservacionServicio, Descripcion)
+                VALUES('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', 
+                        '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')'''.format(
+                                                                                        no, fecha, cod, centroCosto, puntoBi,
+                                                                                        nombreBi, ubicaion, direccionBi, motivo, autorizadoAbas,
+                                                                                        codigoConfirmacion, proveedor, tiempoRespuesta, horaSolicitudCentral, horaLlegada,
+                                                                                        tiempoRealRespuesta, excedenteTiempo, retiro, duracionServicio, operadorCRC, 
+                                                                                        numeroBoleta, nombrePatrullero, observacionServicio, descripcion)
         
         self.cursor.execute(sql)
         self.cursor.fetchall()
