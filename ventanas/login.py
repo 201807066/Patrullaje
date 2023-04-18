@@ -75,6 +75,7 @@ class login:
     def inicioSesion(self):
         user = self.textUsuario.get()
         password = self.textContraseña.get()
+        nombreAnalista = ""
 
         if(user == "" or password == ""):
               messagebox.showerror("Campos vacios", "Campos usuario o contraseña vacios")  
@@ -89,11 +90,15 @@ class login:
                 messagebox.showerror("Campos vacios", "Debe seleccionar el coordinador")  
             else:            
                 self.analista = conexion.conexion().buscarAnalista(user, password)
+                print(self.analista)
+                for i in self.analista:
+                    nombreAnalista = i[1]
+
                 if(len(self.analista)!=0):
                     self.textUsuario.delete('0', 'end')
                     self.textContraseña.delete('0', 'end')
 
-                    self.patrullaje = ventanaPatrullaje.VentanaPatrullaje(self.ventana, user, password).mostrarVentana()
+                    self.patrullaje = ventanaPatrullaje.VentanaPatrullaje(self.ventana, nombreAnalista, self.cbxCoordinador.get()).mostrarVentana()
 
                     
                 else:

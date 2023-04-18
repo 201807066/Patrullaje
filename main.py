@@ -4,7 +4,6 @@ from ventanas import login as login
 
 def main():
     inicio = ventana
-    inicio = v
     ventana.VentanaPatrullaje().mostrarVentana()
     #v.admonUsuarios().ventanaUsuario()
 

@@ -8,11 +8,11 @@ from ventanas import login
 
 class VentanaPatrullaje:
 
-    #def __init__(self, login, user, password):
+    #def __init__(self, login, nombreAnalista, coordinador):
     def __init__(self):
         #VENTANA
-        #self.login = login
-        #self.ventana = Toplevel(login)
+        ##self.login = login
+        ###self.ventana = Toplevel(login)
         self.ventana = Tk()
         self.ventana.title('Patrullaje Bi')
         self.ventana.resizable(False, False)
@@ -25,7 +25,9 @@ class VentanaPatrullaje:
 
         #Datos de usuario login
         #self.usuario = user
-        #self.contrasenia = password
+        self.coordinador = "coordinador"
+        self.nombreAnalista = "nombreAnalista"
+
         self.codigo = StringVar()
 
 
@@ -38,6 +40,7 @@ class VentanaPatrullaje:
         self.ubicacion = StringVar()
         self.direccion = StringVar()
         self.autorizado = StringVar()
+        self.proveedor = "Ebano"
         self.tiempoRespuesta = StringVar()
         self.tiempoRealRespuesta = ""
         self.excedenteTiempo = ""
@@ -76,7 +79,7 @@ class VentanaPatrullaje:
         #Widgets -----> Apartado 1
         self.marcoPrincipal = Frame(self.ventana)
         self.marcoPrincipal.config(bg="#dcffff", width=1350, height=750)
-        self.lblTitulo = Label(self.marcoPrincipal, text="\t\t\t\t\tPatrullaje Bi" + "\t\t\t    Fecha: " + fechaAux)
+        self.lblTitulo = Label(self.marcoPrincipal, text="\t\t\t\tSeguridad Corporativa" + "\t\t\t    Fecha: " + fechaAux)
         self.lblTitulo.config(bg="#325795", width=1350, anchor="w", height=1, font=("Rockwell", 20, 'bold'), foreground="#FFFFFF", relief=RAISED)
 
         self.marcoTitulo = Frame(self.marcoPrincipal)
@@ -85,8 +88,8 @@ class VentanaPatrullaje:
 
         self.lblBI = Label(self.marcoTitulo, text="  BI")
         self.lblBI.config(bg="#325795",anchor="w", height=1, font=("Rockwell", 50, 'bold'), foreground="#FFFFFF")
-        self.lblSeguridad = Label(self.marcoTitulo, text="Seguridad Corporativa")
-        self.lblSeguridad.config(bg="#325795",anchor="w", height=1, font=("Rockwell", 25, 'bold'), foreground="#FFFFFF")
+        self.lblSeguridad = Label(self.marcoTitulo, text="    </Patrullaje>")
+        self.lblSeguridad.config(bg="#325795",anchor="w", height=1, font=("Rockwell", 30, 'bold'), foreground="#FFFFFF")
 
 
         #Widgets -----> Apartado 2
@@ -110,16 +113,16 @@ class VentanaPatrullaje:
         self.cbxMotivo.config(font=("Comic Sans MS", 12), width=15)
         self.lblCodigoConfirmacion = Label(self.marcoPrincipal, text="Código de confirmación")
         self.lblCodigoConfirmacion.config(bg="#dcffff", font=("Comic Sans MS", 12))
-        self.lblJefePatrullero = Label(self.marcoPrincipal, text="(Jefe / Patrullero)")
-        self.lblJefePatrullero.config(bg="#dcffff", font=("Comic Sans MS", 12))
+        #self.lblJefePatrullero = Label(self.marcoPrincipal, text="(Jefe / Patrullero)")
+        #self.lblJefePatrullero.config(bg="#dcffff", font=("Comic Sans MS", 12))
         self.txtCodigoConfirmacion = Entry(self.marcoPrincipal, textvariable=self.codigoConfirmacion)
         self.txtCodigoConfirmacion.config(bg="#F4F4F4", font=("Comic Sans MS", 12), width=8)
         self.txtCodigoConfirmacion.insert(END, "N/A");
-        self.lblProveedor = Label(self.marcoPrincipal, text="Proveedor")
-        self.lblProveedor.config(bg="#dcffff", font=("Comic Sans MS", 12))
-        self.cbxProveedor = ttk.Combobox(self.marcoPrincipal, background="#F4F4F4", state="readonly", width=25, values=["Oficial", "Ebano"])
-        self.cbxProveedor.config(font=("Comic Sans MS", 12), width=10)
-        self.cbxProveedor.current(1)
+        #self.lblProveedor = Label(self.marcoPrincipal, text="Proveedor")
+        #self.lblProveedor.config(bg="#dcffff", font=("Comic Sans MS", 12))
+        #self.cbxProveedor = ttk.Combobox(self.marcoPrincipal, background="#F4F4F4", state="readonly", width=25, values=["Oficial", "Ebano"])
+        #self.cbxProveedor.config(font=("Comic Sans MS", 12), width=10)
+        #self.cbxProveedor.current(1)
 
         #Widgets -----> Apartado 3
         self.lblHoraSolicitud = Label(self.marcoPrincipal, text="Hora solicitud central Bi\n(Formato 24 horas)")
@@ -206,11 +209,11 @@ class VentanaPatrullaje:
         self.lblAutorizadoSINO.place(x=380, y=225)
         self.lblMotivo.place(x=125, y=285)
         self.cbxMotivo.place(x=200, y=285)
-        self.lblCodigoConfirmacion.place(x=5 , y=330)
-        self.lblJefePatrullero.place(x=20 , y=355)
-        self.txtCodigoConfirmacion.place(x=208, y=345)
-        self.lblProveedor.place(x=360, y=320)
-        self.cbxProveedor.place(x=340, y=345)
+        self.lblCodigoConfirmacion.place(x=100 , y=345)
+        #self.lblJefePatrullero.place(x=70 , y=355)
+        self.txtCodigoConfirmacion.place(x=300, y=345)
+        #self.lblProveedor.place(x=360, y=320)
+        #self.cbxProveedor.place(x=340, y=345)
 
          #Widgets -----> Apartado 3
         self.lblHoraSolicitud.place(x=50 , y=405)
@@ -256,7 +259,6 @@ class VentanaPatrullaje:
     #Se obtienen las variables de la ventana de patrullaje
     def buscarPuntoBi(self):
         self.conexion = conexion.conexion().buscarPuntoBi(self.codigo.get())
-
         self.txtHoraSolicitud.delete(0, END)
         for i in self.conexion:
             self.codigoBi = i[1]
@@ -299,52 +301,6 @@ class VentanaPatrullaje:
 
         messagebox.showinfo(puntoBi, "Nombre: {} \nDirección: {} \n Tiempo de respuesta: {}".format(name, direccion, tiempoRespuesta))
         
-    """def analistas(self):
-        analistas = []
-
-        if self.opc.get() == 1:
-            analistas = []
-            self.cbxOperador["values"] = ""
-            self.analistas = conexion.conexion().analistasBi('ALARMAS')
-            for i in self.analistas:
-                analistas.append(i[1])
-            self.cbxOperador["values"] = analistas
-
-            coordinadores = []
-
-            self.analistas = conexion.conexion().coordinadoresBi()
-            for i in self.analistas:
-                coordinadores.append(i[1])
-                self.cbxCoordinador["values"] = coordinadores
-
-        elif self.opc.get() == 2:
-            analistas = []
-            self.cbxOperador["values"] = ""
-            self.analistas = conexion.conexion().analistasBi('CCTV')
-            for i in self.analistas:
-                analistas.append(i[1])
-            self.cbxOperador["values"] = analistas
-            coordinadores = []
-
-            self.analistas = conexion.conexion().coordinadoresBi()
-            for i in self.analistas:
-                coordinadores.append(i[1])
-                self.cbxCoordinador["values"] = coordinadores
-
-        elif self.opc.get() == 3:
-            analistas = []
-            self.cbxOperador["values"] = ""
-            self.analistas = conexion.conexion().analistasBi('CLAVES')
-            for i in self.analistas:
-                analistas.append(i[1])
-            self.cbxOperador["values"] = analistas
-
-            coordinadores = []
-
-            self.analistas = conexion.conexion().coordinadoresBi()
-            for i in self.analistas:
-                coordinadores.append(i[1])
-                self.cbxCoordinador["values"] = coordinadores"""
     
     def motivosPatrulla(self):
         motivos = []
@@ -384,17 +340,18 @@ class VentanaPatrullaje:
                 if self.txtHoraRetiro.get() != "":             
                     self.duracionServicio = str(self.restarHoras(self.txtHoraRetiro.get(), self.txtHoraLlegada.get()))
 
-
+        
 
             fecha = datetime.datetime.now()
-            fechaAux = str(fecha.year) +"-"+ str(fecha.month) +"-"+ str(fecha.day)
+            fechaAux = str(fecha.day) +"-"+ str(fecha.month) +"-"+ str(fecha.year) 
             self.patrulla = conexion.conexion().addPatrulla(self.i, fechaAux, self.codigoBi, self.centroCosto, self.puntoBi, 
                                                             self.nombreBi, self.ubicacion, self.direccion, self.cbxMotivo.get(), 
-                                                            self.autorizado, self.txtCodigoConfirmacion.get(), self.cbxProveedor.get(), 
+                                                            self.autorizado, self.txtCodigoConfirmacion.get(), self.proveedor, 
                                                             self.tiempoRespuesta, self.txtHoraSolicitud.get(), self.txtHoraLlegada.get(), 
                                                             self.tiempoRealRespuesta, self.excedenteTiempo, self.txtHoraRetiro.get(), 
-                                                            self.duracionServicio, self.txtNombreOperador.get(), self.txtNumeroBoleta.get(), 
-                                                            self.txtNombrePatrullero.get(), self.txtObservacionServicio.get(1.0, END+"-1c"), self.txtDescripcion.get(1.0, END+"-1c"))
+                                                            self.duracionServicio, self.nombreAnalista, self.txtNombreOperador.get(), self.txtNumeroBoleta.get(), 
+                                                            self.txtNombrePatrullero.get(), self.txtObservacionServicio.get(1.0, END+"-1c"), 
+                                                            self.coordinador, self.txtDescripcion.get(1.0, END+"-1c"))
             self.mostrarPatrullas()
             self.limpiarCampos()
        
@@ -416,8 +373,13 @@ class VentanaPatrullaje:
         self.mPatrulla = conexion.conexion().mostrarPatrulla()
 
         for i in self.mPatrulla:
-            self.tabla.insert("", 'end', text=i[0], values=(i[2], i[2]), tags=('pendiente'))
-            self.tabla.tag_configure('pendiente', background='#20B2AA')
+            print(i[1])
+            if i[17] == "" or i[21] == "" or i[23] == "":
+                self.tabla.insert("", 'end', text=i[0], values=(i[2], i[2]), tags=('pendiente'))
+                self.tabla.tag_configure('pendiente', background='#CD6155')
+            else:
+                self.tabla.insert("", 'end', text=i[0], values=(i[2], i[2]), tags=('finalizados'))
+                self.tabla.tag_configure('finalizados', background='#52BE80')
 
     def limpiarCampos(self):
         self.lblNombreBi['text'] = "Nombre: "
