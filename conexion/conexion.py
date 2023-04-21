@@ -204,3 +204,13 @@ class conexion:
         self.cursor.close()
         self.database.commit()
         self.database.close()
+
+    def eliminarPatrulla(self, no, cod):
+        self.cursor = self.database.cursor()
+        sql = '''DELETE FROM patrullaje WHERE No = "{}" AND Codigo = "{}";'''.format(no, cod)
+
+        self.cursor.execute(sql)
+        self.cursor.fetchall()
+        self.cursor.close()
+        self.database.commit()
+        self.database.close()
