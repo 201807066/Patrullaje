@@ -166,5 +166,41 @@ class conexion:
 
         return resultset
 
+    def buscarPatrulla(self, no, cod, motivo, operador):
+        self.cursor = self.database.cursor()
+        sql = '''SELECT * FROM patrullaje WHERE No = "{}" AND Codigo = "{}" AND Motivo = "{}" AND OperadorBi = "{}"; '''.format(no, cod, motivo, operador)
+        self.cursor.execute(sql)
+        resultset = self.cursor.fetchall()
+        self.cursor.close()
+        self.database.commit()
+        self.database.close()
 
+        return resultset     
+
+    def editarDatosPatrulla(self, no, cod, 
+                            motivo, codigoConfirmacion, 
+                            horaSolicitud, horaLlegada,
+                            tiempoRealRespuesta, excedenteTiempo,
+                            horaRetiro, duracionServicio, nombreOperador,
+                            numeroBoleta, nombrePatrullero,
+                            observacionServicio, descripcion,):
+        self.cursor = self.database.cursor()
+        sql = '''UPDATE patrullaje SET Motivo = '{}', CodigoConfirmacion = '{}',
+                                        HoraSolicitudCentral = '{}', HoraLlegada = '{}',
+                                        TiempoRealRespuesta = '{}', ExcedenteTiempo = '{}',
+                                        Retiro = '{}', DuracionServicio = '{}', OperadorCRC = '{}', 
+                                        NumeroBoleta = '{}', NombrePatrullero = '{}',
+                                        ObservacionServicio = '{}', Descripcion = '{}'
+                WHERE No = '{}' AND Codigo = '{}'; '''.format(motivo, codigoConfirmacion,
+                                                              horaSolicitud, horaLlegada,
+                                                              tiempoRealRespuesta, excedenteTiempo,
+                                                              horaRetiro, duracionServicio, nombreOperador,
+                                                              numeroBoleta, nombrePatrullero,
+                                                              observacionServicio, descripcion,
+                                                              no, cod)
         
+        self.cursor.execute(sql)
+        self.cursor.fetchall()
+        self.cursor.close()
+        self.database.commit()
+        self.database.close()
