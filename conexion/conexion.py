@@ -87,6 +87,7 @@ class conexion:
         self.database.commit()
         self.database.close()
 
+    #Tabla de patrullaje
     def buscarMotivo(self, motivo):
         self.cursor = self.database.cursor()
         sql = '''SELECT * FROM motivos WHERE MOTIVO = "{}"; '''.format(motivo)
@@ -175,7 +176,18 @@ class conexion:
         self.database.commit()
         self.database.close()
 
-        return resultset     
+        return resultset   
+
+    def buscarPatrullaFecha(self, fecha):
+        self.cursor = self.database.cursor()
+        sql = '''SELECT * FROM patrullaje WHERE Fecha = "{}" ; '''.format(fecha)
+        self.cursor.execute(sql)
+        resultset = self.cursor.fetchall()
+        self.cursor.close()
+        self.database.commit()
+        self.database.close()
+
+        return resultset    
 
     def editarDatosPatrulla(self, no, cod, 
                             motivo, codigoConfirmacion, 
@@ -214,3 +226,37 @@ class conexion:
         self.cursor.close()
         self.database.commit()
         self.database.close()
+
+    def searchPatrulla(self, cod):
+        self.cursor = self.database.cursor()
+        sql = '''SELECT * FROM patrullaje WHERE Codigo = "{}"; '''.format(cod)
+        self.cursor.execute(sql)
+        resultset = self.cursor.fetchall()
+        self.cursor.close()
+        self.database.commit()
+        self.database.close()
+
+        return resultset
+    
+    # Tabla de patrullas eliminadas
+    def addPatrullaEliminada(self, no, cod, nombre, motivo):
+        self.cursor = self.database.cursor()
+
+        sql = '''INSERT INTO patrullaeliminada(No, Codigo, Nombre, Motivo) VALUES('{}', '{}', '{}', '{}')'''.format(no, cod, nombre, motivo)
+        
+        self.cursor.execute(sql)
+        self.cursor.fetchall()
+        self.cursor.close()
+        self.database.commit()
+        self.database.close()
+
+    def mostrarPatrullasEliminadas(self):
+        self.cursor = self.database.cursor()
+        sql = '''SELECT * FROM patrullaeliminada; '''
+        self.cursor.execute(sql)
+        resultset = self.cursor.fetchall()
+        self.cursor.close()
+        self.database.commit()
+        self.database.close()
+
+        return resultset

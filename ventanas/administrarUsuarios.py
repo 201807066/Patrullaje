@@ -13,10 +13,10 @@ class admonUsuarios:
         self.analistas.geometry("500x585")
 
         #Variables
-        self.bCorp = IntVar()
+        self.bCorp = StringVar()
         self.nombre = StringVar()
-        self.corp = IntVar()
-        self.ant = IntVar()
+        self.corp = StringVar()
+        self.ant = StringVar()
 
         self.motivo = StringVar()
 
@@ -153,6 +153,9 @@ class admonUsuarios:
         if len(self.analista) == 0:
             self.registrar = conexion.conexion().registrarAnalista(self.nombre.get(), self.corp.get(), self.ant.get(), self.cbxRol.get(), self.cbxArea.get())
             messagebox.showinfo("Registro correcto", "Se registro de manera exitoso al analista {}".format(self.nombre.get()))
+            self.txtNombre.delete(0, "end")
+            self.txtCorp.delete(0, "end")
+            self.txtAnt.delete(0, "end")
         else:
             messagebox.showerror("Error en el registro", "El corp {} ya se encuentra registrado como analista de monitoreo".format(self.corp.get()))
 
@@ -191,5 +194,5 @@ class admonUsuarios:
 
 
     def volverVentanaPatrullaje(self):
-        self.analistas.withdraw()
+        self.analistas.destroy()
         

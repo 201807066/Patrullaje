@@ -8,12 +8,12 @@ from ventanas import login
 
 class VentanaPatrullaje:
 
-    def __init__(self, login, nombreAnalista, coordinador):
-    #def __init__(self):
+    #def __init__(self, login, nombreAnalista, coordinador):
+    def __init__(self):
         #VENTANA
-        self.login = login
-        self.ventana = Toplevel(login)
-        ##self.ventana = Tk()
+        ##self.login = login
+        ##self.ventana = Toplevel(login)
+        self.ventana = Tk()
         self.ventana.title('Patrullaje Bi')
         self.ventana.resizable(False, False)
         self.ventana.geometry("1350x650")
@@ -25,15 +25,17 @@ class VentanaPatrullaje:
 
         #Datos de usuario login
         #self.usuario = user
-        self.coordinador = coordinador
-        self.nombreAnalista = nombreAnalista
+        self.coordinador = "coordinador"
+        self.nombreAnalista = "nombreAnalista"
 
         self.no = StringVar()
         self.codigo = StringVar()
+        self.fechaCordinacion = ""
+        self.excedente = ""
+        self.duracion = ""
 
 
         #Variables de patrullaje
-
         self.codigoBi = StringVar()
         self.centroCosto = StringVar()
         self.puntoBi = StringVar()
@@ -48,8 +50,6 @@ class VentanaPatrullaje:
         self.retiro = StringVar()
         self.duracionServicio = ""
 
-
-        
         self.codigoConfirmacion = StringVar()
 
         self.horaSolicitud = StringVar()
@@ -65,13 +65,15 @@ class VentanaPatrullaje:
 
         #Contador 
         self.i = 1
+        self.iEliminadas = 1
+
 
         #Barra de menu
         self.barraMenu = Menu()
         self.menuArchivo = Menu(self.barraMenu, tearoff=False)
 
-        self.menuArchivo.add_command(label = "Administrar analistas", command=self.admonAnalistas)
-        self.menuArchivo.add_command(label="Salir", command=self.ventana.destroy)
+        self.menuArchivo.add_command(label = "Reporte", command=self.admonAnalistas)
+        self.menuArchivo.add_command(label="Cerrar Sesión", command=self.ventana.destroy)
 
         self.barraMenu.add_cascade(menu=self.menuArchivo, label="Archivo")
         self.ventana.config(menu=self.barraMenu)
@@ -102,8 +104,6 @@ class VentanaPatrullaje:
         self.txtCodigo.config(bg="#F4F4F4", font=("Comic Sans MS", 12), width=10)
         self.txtCodigo.bind("<Return>", self.buscarPuntoBi)
 
-        #self.btnBuscar = Button(self.marcoPrincipal, text="Buscar", command=self.buscarPuntoBi)
-        #self.btnBuscar.config(bg="#3266B4", foreground="white", width=7, font=("Comic Sans MS", 12))
         self.btnDetalles = Button(self.marcoPrincipal, text="Detalles", command=self.informacioPuntoBi)
         self.btnDetalles.config(bg="#3266B4", foreground="white", width=7, font=("Comic Sans MS", 12))
         self.lblAutorizado = Label(self.marcoPrincipal, text="Autorizado para abastecimiento:")
@@ -116,16 +116,9 @@ class VentanaPatrullaje:
         self.cbxMotivo.config(font=("Comic Sans MS", 12), width=15)
         self.lblCodigoConfirmacion = Label(self.marcoPrincipal, text="Código de confirmación")
         self.lblCodigoConfirmacion.config(bg="#dcffff", font=("Comic Sans MS", 12))
-        #self.lblJefePatrullero = Label(self.marcoPrincipal, text="(Jefe / Patrullero)")
-        #self.lblJefePatrullero.config(bg="#dcffff", font=("Comic Sans MS", 12))
         self.txtCodigoConfirmacion = Entry(self.marcoPrincipal, textvariable=self.codigoConfirmacion)
         self.txtCodigoConfirmacion.config(bg="#F4F4F4", font=("Comic Sans MS", 12), width=8)
         self.txtCodigoConfirmacion.insert(END, "N/A");
-        #self.lblProveedor = Label(self.marcoPrincipal, text="Proveedor")
-        #self.lblProveedor.config(bg="#dcffff", font=("Comic Sans MS", 12))
-        #self.cbxProveedor = ttk.Combobox(self.marcoPrincipal, background="#F4F4F4", state="readonly", width=25, values=["Oficial", "Ebano"])
-        #self.cbxProveedor.config(font=("Comic Sans MS", 12), width=10)
-        #self.cbxProveedor.current(1)
 
         #Widgets -----> Apartado 3
         self.lblHoraSolicitud = Label(self.marcoPrincipal, text="Hora solicitud central Bi\n(Formato 24 horas)")
@@ -173,6 +166,12 @@ class VentanaPatrullaje:
         self.btnGuardar = Button(self.marcoPrincipal, text="Guardar", command=self.editarPatrulla)
         self.btnGuardar.config(bg="#3266B4", foreground="white", width=7, font=("Comic Sans MS", 12))
 
+        self.lblSearchCodigo = Label(self.marcoPrincipal, text="Buscar por código")
+        self.lblSearchCodigo.config(bg="#dcffff", font=("Comic Sans MS", 12))
+        self.txtCodigoSearch = Entry(self.marcoPrincipal)
+        self.txtCodigoSearch.config(bg="#F4F4F4", font=("Comic Sans MS", 12), width=10)
+        self.txtCodigoSearch.bind("<Return>", self.searchPatrulla)
+
         #Creacion de la tabla de patrullas enviadas
         columnas = ('#0', '#1', '#2')
         self.tabla = ttk.Treeview(self.marcoPrincipal, height=20,  columns=columnas)
@@ -209,18 +208,13 @@ class VentanaPatrullaje:
         self.lblNombreBi.place(x=10, y=135)
         self.lblCodigo.place(x=10, y=205)
         self.txtCodigo.place(x=90, y=205)
-        #self.btnBuscar.place(x=210, y=185)
-        #self.btnDetalles.place(x=210, y=230)
         self.btnDetalles.place(x=210, y=200)
         self.lblAutorizado.place(x=300, y=175)
         self.lblAutorizadoSINO.place(x=380, y=225)
         self.lblMotivo.place(x=125, y=285)
         self.cbxMotivo.place(x=200, y=285)
         self.lblCodigoConfirmacion.place(x=100 , y=345)
-        #self.lblJefePatrullero.place(x=70 , y=355)
         self.txtCodigoConfirmacion.place(x=300, y=345)
-        #self.lblProveedor.place(x=360, y=320)
-        #self.cbxProveedor.place(x=340, y=345)
 
          #Widgets -----> Apartado 3
         self.lblHoraSolicitud.place(x=50 , y=405)
@@ -244,13 +238,15 @@ class VentanaPatrullaje:
         self.lblDescripcion.place(x=750,y=400)
         self.txtDescripcion.place(x=588,y=437)
 
-        self.btnEliminar.place(x=1255,y=525)
+        self.btnEliminar.place(x=1255,y=550)
         self.btnAceptar.place(x=1100,y=600)
         self.btnGuardar.place(x=1200,y=600)
 
         # ** Creacion de la tabla con los datos de las patrullas enviadas **
-        self.tabla.place(x=1032, y=95)
-        self.lblPatrullasEnviadas.place(x=1125, y=60)
+        self.lblSearchCodigo.place(x=1075, y=50)
+        self.txtCodigoSearch.place(x=1225, y=55)
+        self.lblPatrullasEnviadas.place(x=1125, y=90)
+        self.tabla.place(x=1032, y=120)
 
         #Separador -----> Apartado 1
         self.separador1v.place(relx=0.42, rely=0.052, relheight=1, relwidth=0.002)
@@ -266,42 +262,47 @@ class VentanaPatrullaje:
         self.mostrarPatrullas()
         self.ventana.mainloop()
     #Se obtienen las variables de la ventana de patrullaje
+    
     def buscarPuntoBi(self, event):
         self.conexion = conexion.conexion().buscarPuntoBi(self.codigo.get())
         self.txtHoraSolicitud.delete(0, END)
-        for i in self.conexion:
-            self.codigoBi = i[1]
-            self.centroCosto = i[2]
-            self.puntoBi = i[3]
-            self.nombreBi = i[4]
-            self.ubicacion = i[5]
-            self.direccion = i[6]
-            self.tiempoRespuesta = i[7]
-            self.autorizado = i[9]
 
-            print("-->", i)
-            if i[9] == "SI":
-                self.lblAutorizadoSINO['text'] = "SI"
-                self.lblAutorizadoSINO.config(fg="#008000", font=("Comic Sans MS", 15, 'bold'))
-            elif i[9] == "NO":
-                self.lblAutorizadoSINO['text'] = "NO"
-                self.lblAutorizadoSINO.config(fg="#cc0605", font=("Comic Sans MS", 15, 'bold'))
-            else:
-                self.lblAutorizadoSINO['text'] = "N/A"
-                self.lblAutorizadoSINO.config(fg="#000000", font=("Comic Sans MS", 15, 'bold'))
+        if self.conexion == []:
+            messagebox.showerror("Error", "Punto de servicio no encontrado")
+            self.txtCodigo.delete(0, END)
+        else:
+            for i in self.conexion:
+                self.codigoBi = i[1]
+                self.centroCosto = i[2]
+                self.puntoBi = i[3]
+                self.nombreBi = i[4]
+                self.ubicacion = i[5]
+                self.direccion = i[6]
+                self.tiempoRespuesta = i[7]
+                self.autorizado = i[9]
 
-            self.lblNombreBi['text'] = "Nombre: \t"+i[4]
+
+                if i[9] == "SI":
+                    self.lblAutorizadoSINO['text'] = "SI"
+                    self.lblAutorizadoSINO.config(fg="#008000", font=("Comic Sans MS", 15, 'bold'))
+                elif i[9] == "NO":
+                    self.lblAutorizadoSINO['text'] = "NO"
+                    self.lblAutorizadoSINO.config(fg="#cc0605", font=("Comic Sans MS", 15, 'bold'))
+                else:
+                    self.lblAutorizadoSINO['text'] = "N/A"
+                    self.lblAutorizadoSINO.config(fg="#000000", font=("Comic Sans MS", 15, 'bold'))
+
+                self.lblNombreBi['text'] = "Nombre: \t"+i[4]
 
             
-            self.txtHoraSolicitud.insert(0, datetime.datetime.now().strftime("%H:%M"))
+                self.txtHoraSolicitud.insert(0, datetime.datetime.now().strftime("%H:%M"))
 
     def informacioPuntoBi(self):
 
         horaActualAux = datetime.datetime.now().strftime("%H:%M")
-        print(horaActualAux)
         tiempoRealRespuestaAux = ""
-        excedenteTiempoAux = ""
-        duracionServicioAux = ""
+        excedenteTiempoAux = self.excedente
+        duracionServicioAux = self.duracion
 
         self.conexion = conexion.conexion().buscarPuntoBi(self.codigo.get())
         name = ""
@@ -309,18 +310,21 @@ class VentanaPatrullaje:
         tiempoRespuesta = ""
         puntoBi = ""
 
-        tiempoRealRespuestaAux = str(self.restarHoras(horaActualAux, self.txtHoraSolicitud.get()))
-        print(tiempoRealRespuestaAux)
-            
-        #Se calcula el tiempo de excedente de la patrualla
-        excedenteTiempoAux = str(self.restarHoras(tiempoRealRespuestaAux[:-3], self.tiempoRespuesta[:-3]))
+        if self.fechaCordinacion == self.fechaPrincipal:
 
-        if excedenteTiempoAux < "00:00:00":
-            excedenteTiempoAux = "00:00:00"
-        if self.txtHoraLlegada.get() != "":
-            duracionServicioAux = str(self.restarHoras(horaActualAux, self.txtHoraLlegada.get()))
-        else:
-            duracionServicioAux = "Patrullero aun no ha llegado al punto de servicio Bi"
+            if self.txtHoraSolicitud.get() != "" and self.txtHoraLlegada.get() == "":
+                tiempoRealRespuestaAux = str(self.restarHoras(horaActualAux, self.txtHoraSolicitud.get()))
+            
+            #Se calcula el tiempo de excedente de la patrualla
+                excedenteTiempoAux = str(self.restarHoras(tiempoRealRespuestaAux[:-3], self.tiempoRespuesta[:-3]))
+
+                if excedenteTiempoAux < "00:00:00":
+                    excedenteTiempoAux = "00:00:00"
+                if self.txtHoraLlegada.get() == "":
+                    duracionServicioAux = "Patrullero aun no ha llegado al punto de servicio Bi"
+                    print("duracion servicio: ", duracionServicioAux)
+            elif self.txtHoraLlegada.get() != "" and self.txtHoraRetiro.get() == "":
+                duracionServicioAux = str(self.restarHoras(horaActualAux, self.txtHoraLlegada.get()))
 
         for i in self.conexion:
             puntoBi = i[3]
@@ -329,9 +333,8 @@ class VentanaPatrullaje:
             tiempoRespuesta = i[7]
         
 
-        messagebox.showinfo(puntoBi, "Nombre: {} \nDirección: {} \nTiempo de respuesta: {}\n--------------------------------\nExcedente de tiempo: {}\nDuración del servicio: {}".format(name, direccion, tiempoRespuesta, excedenteTiempoAux, duracionServicioAux))
+        messagebox.showinfo(puntoBi, "Nombre: {} \nDirección: {} \nTiempo de respuesta: {}\n--------------------------------\nFecha de coordinación: {} \nExcedente de tiempo: {}\nDuración del servicio: {}".format(name, direccion, tiempoRespuesta, self.fechaCordinacion, excedenteTiempoAux, duracionServicioAux))
         
-    
     def motivosPatrulla(self):
         motivos = []
 
@@ -342,15 +345,26 @@ class VentanaPatrullaje:
         self.cbxMotivo["values"] = motivos
 
     def admonAnalistas(self):
-        self.minimizaVentana()
-        self.login = login.login(self.ventana).muestraVentana()
+        validacion = simpledialog.askstring("Reporte", "¿Fecha de reporte día-mes-año?")
 
-    def minimizaVentana(self):
-        self.ventana.iconify()
+        if validacion == None:
+            pass
+        else:  
+            self.reportePatrulla = conexion.conexion().buscarPatrullaFecha(validacion)
+
+            if self.reportePatrulla == []:
+                messagebox.showinfo("Patrullas", "No se coordinaron patrullas en esta fecha: {}".format(validacion))
+            else:
+                for i in self.reportePatrulla:
+                    print(i)
 
     def addPatrulla(self):
-        if self.cbxMotivo.get()=="":
+        if self.txtCodigo.get() == "":  
+            messagebox.showerror("Error", "Debe ingresar un codigo")
+        elif self.cbxMotivo.get()=="":
             messagebox.showerror("Error", "Debe seleccionar un motivo")
+        elif self.txtCodigo.get() == "" and self.cbxMotivo.get()=="":
+            messagebox.showerror("Error", "Debe llenar los campos codigo y motivo")
         else:
             self.cantidadPatrullas()
             self.i += 1
@@ -387,7 +401,13 @@ class VentanaPatrullaje:
        
     def cantidadPatrullas(self):
         self.mPatrulla = conexion.conexion().mostrarPatrulla()
-        self.i = len(self.mPatrulla)
+
+        if self.mPatrulla == []:
+            self.i = 0
+        else:
+            patrullaAux = self.mPatrulla[-1]
+
+            self.i = patrullaAux[0]
 
     def mostrarPatrullas(self):
         
@@ -400,13 +420,15 @@ class VentanaPatrullaje:
         for i in self.mPatrulla:
             if i[1] == self.fechaPrincipal:
                 #14 -> llegada i[17]-> Retiro #21 -> Numero de Boleta -> Observacion del servicio
-                if i[14] == "" or i[17] == "" or i[20] == "" or i[21] == "" or i[22] == "" or i[23] == "":
+                if i[14] == "" or i[20] == "" or i[21] == "" or i[22] == "" or i[23] == "":
                     self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('pendiente'))
                     self.tabla.tag_configure('pendiente', background='#CD6155')
+                elif i[18] == "":
+                    self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('pendienteFinalizacion'))
+                    self.tabla.tag_configure('pendienteFinalizacion', background='#F3883F')
                 else:
                     self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('finalizados'))
                     self.tabla.tag_configure('finalizados', background='#52BE80')
-
 
     def limpiarCampos(self):
         self.lblNombreBi['text'] = "Nombre: "
@@ -425,6 +447,7 @@ class VentanaPatrullaje:
 
         self.txtObservacionServicio.delete(1.0, END)
         self.txtDescripcion.delete(1.0, END)
+        #self.txtCodigoSearch.delete(1.0, END)
 
     def editarPatrulla(self):
 
@@ -447,7 +470,7 @@ class VentanaPatrullaje:
                                                                     self.txtHoraRetiro.get(), self.duracionServicio, self.txtNombreOperador.get(),
                                                                     self.txtNumeroBoleta.get(), self.txtNombrePatrullero.get(),
                                                                     self.txtObservacionServicio.get(1.0, END+"-1c"), self.txtDescripcion.get(1.0, END+"-1c"))
-
+        self.txtCodigoSearch.delete(0, END)
         self.limpiarCampos()
         self.mostrarPatrullas()
         self.btnEliminar["state"] = "disable"
@@ -455,8 +478,6 @@ class VentanaPatrullaje:
         self.btnGuardar["state"] = "disable"
 
     def doubleClickTabla(self, event):
-        self.claveVieja = str(self.tabla.item(self.tabla.selection())["values"][0])
-
         self.limpiarCampos()
         self.txtCodigoConfirmacion.delete(0, END)
         
@@ -477,6 +498,8 @@ class VentanaPatrullaje:
                 self.cbxMotivo.current(self.cbxMotivo["values"].index(opciones))
 
         for i in self.patrullaEdit:
+
+            self.fechaCordinacion = str(i[1])
             self.txtCodigo.insert(END, i[2])
             self.txtCodigoConfirmacion.insert(END, i[10])
             
@@ -490,6 +513,9 @@ class VentanaPatrullaje:
                 self.txtHoraLlegada.insert(END, "")
             else:
                 self.txtHoraLlegada.insert(END, horaLlegadaAux[:-3])
+
+            self.excedente = str(i[16])
+            self.duracion = str(i[18])
 
 
             horaRetiroAux = str(i[17])
@@ -517,9 +543,13 @@ class VentanaPatrullaje:
         if validacion == None:
             pass
         else:
-            print("Motivo ->", validacion)
             self.delete = conexion.conexion().eliminarPatrulla(self.no, self.codigoBi)
 
+            self.cantidadPatrullasEliminadas()
+            self.iEliminadas += 1
+            self.addDelete = conexion.conexion().addPatrullaEliminada(self.iEliminadas, self.codigoBi, self.nombreBi, validacion)
+
+        self.txtCodigoSearch.delete(0, END)
         self.limpiarCampos()
         self.mostrarPatrullas()
 
@@ -527,10 +557,43 @@ class VentanaPatrullaje:
         self.btnAceptar["state"] = "normal"
         self.btnGuardar["state"] = "disable"
 
+    def cantidadPatrullasEliminadas(self):
+        self.mPatrulla = conexion.conexion().mostrarPatrullasEliminadas()
+
+        if self.mPatrulla == []:
+            self.iEliminadas = 0
+        else:
+            patrullaAux = self.mPatrulla[-1]
+
+            self.iEliminadas = patrullaAux[0]
+
     def restarHoras(self, hora1, hora2):
         hora1 = datetime.datetime.strptime(hora1, "%H:%M")
         hora2 = datetime.datetime.strptime(hora2, "%H:%M")
         resta = hora1 - hora2
         return resta
 
-    
+    #Buscar patrulla por codigo
+    def searchPatrulla(self, event):
+
+        registros = self.tabla.get_children()
+        for registro in registros:
+            self.tabla.delete(registro)
+
+            
+        self.conexion = conexion.conexion().searchPatrulla(self.txtCodigoSearch.get())
+
+        if self.txtCodigoSearch.get() != "":
+            for i in self.conexion:
+                #14 -> llegada i[17]-> Retiro #21 -> Numero de Boleta -> Observacion del servicio
+                if i[14] == "" or i[17] == "" or i[20] == "" or i[21] == "" or i[22] == "" or i[23] == "":
+                    self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('pendiente'))
+                    self.tabla.tag_configure('pendiente', background='#CD6155')
+                elif i[18] == "" :
+                    self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('pendienteFinalizacion'))
+                    self.tabla.tag_configure('pendienteFinalizacion', background='#F3883F')
+                else:
+                    self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('finalizados'))
+                    self.tabla.tag_configure('finalizados', background='#52BE80')
+        else: 
+            self.mostrarPatrullas()

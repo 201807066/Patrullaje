@@ -90,7 +90,6 @@ class login:
                 messagebox.showerror("Campos vacios", "Debe seleccionar el coordinador")  
             else:            
                 self.analista = conexion.conexion().buscarAnalista(user, password)
-                print(self.analista)
                 for i in self.analista:
                     nombreAnalista = i[1]
 
