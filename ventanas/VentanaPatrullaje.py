@@ -76,6 +76,7 @@ class VentanaPatrullaje:
         self.menuArchivo = Menu(self.barraMenu, tearoff=False)
 
         self.menuArchivo.add_command(label = "Reporte", command=self.reportesPatrullaje)
+        self.menuArchivo.add_command(label = "Eliminados", command=self.reportesEliminados)
         self.menuArchivo.add_command(label="Cerrar Sesión", command=self.ventana.destroy)
 
         self.barraMenu.add_cascade(menu=self.menuArchivo, label="Archivo")
@@ -350,6 +351,7 @@ class VentanaPatrullaje:
             motivos.append(i[1])
         self.cbxMotivo["values"] = motivos
 
+    #********** REPORTES EXCEL **********
     def reportesPatrullaje(self):
         fila = 1
         columna = 0
@@ -464,6 +466,34 @@ class VentanaPatrullaje:
                         fila += 1
                 
                 workbook.close()
+
+    def reportesEliminados(self):
+        fila = 1
+        columna = 0
+
+        self.reportePatrullaEliminado = conexion.conexion().mostrarPatrullasEliminadas()
+
+        workbook = xlsxwriter.Workbook('patrullaje_eliminados.xlsx')
+        sheet = workbook.add_worksheet()
+
+        bold = workbook.add_format({'bold': True})
+
+        sheet.write('A1', 'No.', bold)
+        sheet.write('B1', 'Fecha', bold)
+        sheet.write('C1', 'Código', bold)
+        sheet.write('D1', 'Nombre', bold)
+        sheet.write('E1', 'Motivo', bold)
+        sheet.write('F1', 'Área', bold)
+
+        for i in self.reportePatrullaEliminado:
+            incremento = 0
+            for j in i:
+                sheet.write(fila, columna + incremento, str(j))
+                incremento += 1
+            fila += 1
+        workbook.close()
+ 
+    #***************************************
 
     def addPatrulla(self):
         if self.txtCodigo.get() == "":  
