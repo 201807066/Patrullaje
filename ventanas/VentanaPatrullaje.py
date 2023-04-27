@@ -3,17 +3,17 @@ from tkinter import *
 from tkinter import ttk, messagebox, simpledialog
 import datetime
 from conexion import conexion
+import xlsxwriter
 
-from ventanas import login
 
 class VentanaPatrullaje:
 
-    #def __init__(self, login, nombreAnalista, coordinador):
-    def __init__(self):
+    def __init__(self, login, nombreAnalista, coordinador, areaAnalista, rolAnalista):
+    #def __init__(self):
         #VENTANA
-        ##self.login = login
-        ##self.ventana = Toplevel(login)
-        self.ventana = Tk()
+        self.login = login
+        self.ventana = Toplevel(login)
+        #self.ventana = Tk()
         self.ventana.title('Patrullaje Bi')
         self.ventana.resizable(False, False)
         self.ventana.geometry("1350x650")
@@ -25,14 +25,17 @@ class VentanaPatrullaje:
 
         #Datos de usuario login
         #self.usuario = user
-        self.coordinador = "coordinador"
-        self.nombreAnalista = "nombreAnalista"
+        self.coordinador = coordinador
+        self.nombreAnalista = nombreAnalista
+        self.areaAnalista = areaAnalista
+        self.rolAnalista = rolAnalista
 
         self.no = StringVar()
         self.codigo = StringVar()
         self.fechaCordinacion = ""
         self.excedente = ""
         self.duracion = ""
+        self.areaAnalistaAux = ""
 
 
         #Variables de patrullaje
@@ -72,7 +75,7 @@ class VentanaPatrullaje:
         self.barraMenu = Menu()
         self.menuArchivo = Menu(self.barraMenu, tearoff=False)
 
-        self.menuArchivo.add_command(label = "Reporte", command=self.admonAnalistas)
+        self.menuArchivo.add_command(label = "Reporte", command=self.reportesPatrullaje)
         self.menuArchivo.add_command(label="Cerrar Sesión", command=self.ventana.destroy)
 
         self.barraMenu.add_cascade(menu=self.menuArchivo, label="Archivo")
@@ -89,6 +92,8 @@ class VentanaPatrullaje:
         self.marcoTitulo.config(bg="#325795", width=570, height=85)
 
 
+        self.lblNombreOperadorBi = Label(self.marcoTitulo, text="Hola "+ self.nombreAnalista)
+        self.lblNombreOperadorBi.config(bg="#325795",anchor="w", height=1, font=("Rockwell", 10, 'bold'), foreground="#FFFFFF")
         self.lblBI = Label(self.marcoTitulo, text="  BI")
         self.lblBI.config(bg="#325795",anchor="w", height=1, font=("Rockwell", 50, 'bold'), foreground="#FFFFFF")
         self.lblSeguridad = Label(self.marcoTitulo, text="    </Patrullaje>")
@@ -201,6 +206,7 @@ class VentanaPatrullaje:
         self.lblTitulo.place(x=0, y=0)
 
         self.marcoTitulo.place(x=0, y=38)
+        self.lblNombreOperadorBi.place(x=250, y=0)
         self.lblBI.place(x=0, y=0)
         self.lblSeguridad.place(x=150, y=20)
 
@@ -333,7 +339,7 @@ class VentanaPatrullaje:
             tiempoRespuesta = i[7]
         
 
-        messagebox.showinfo(puntoBi, "Nombre: {} \nDirección: {} \nTiempo de respuesta: {}\n--------------------------------\nFecha de coordinación: {} \nExcedente de tiempo: {}\nDuración del servicio: {}".format(name, direccion, tiempoRespuesta, self.fechaCordinacion, excedenteTiempoAux, duracionServicioAux))
+        messagebox.showinfo(puntoBi, "Nombre: {} \nDirección: {} \nTiempo de respuesta: {}\n--------------------------------\nFecha de coordinación: {} \nExcedente de tiempo: {}\nDuración del servicio: {}\nÁrea: {}".format(name, direccion, tiempoRespuesta, self.fechaCordinacion, excedenteTiempoAux, duracionServicioAux, self.areaAnalistaAux))
         
     def motivosPatrulla(self):
         motivos = []
@@ -344,19 +350,120 @@ class VentanaPatrullaje:
             motivos.append(i[1])
         self.cbxMotivo["values"] = motivos
 
-    def admonAnalistas(self):
-        validacion = simpledialog.askstring("Reporte", "¿Fecha de reporte día-mes-año?")
+    def reportesPatrullaje(self):
+        fila = 1
+        columna = 0
+        fecha = simpledialog.askstring("Reporte", "¿Fecha de reporte día-mes-año?")
 
-        if validacion == None:
+        if fecha == NONE:
             pass
+        elif fecha == "":
+            self.reportePatrulla = conexion.conexion().mostrarPatrulla()
+
+            workbook = xlsxwriter.Workbook('patrullaje_total.xlsx')
+            sheet = workbook.add_worksheet()
+
+            bold = workbook.add_format({'bold': True})
+
+            sheet.write('A1', 'No.', bold)
+            sheet.write('B1', 'Fecha', bold)
+            sheet.write('C1', 'Código', bold)
+            sheet.write('D1', 'Centro de costo', bold)
+            sheet.write('E1', 'Punto BI', bold)
+            sheet.write('F1', 'Nombre', bold)
+            sheet.write('G1', 'Dirección', bold)
+            sheet.write('H1', 'Ubicación', bold)
+            sheet.write('I1', 'Motivo', bold)
+            sheet.write('J1', 'Autorizado para abastecimiento', bold)
+            sheet.write('K1', 'Codigo de confirmación (Jefe/Patrullero)', bold)
+            sheet.write('L1', 'Proveedor', bold)
+            sheet.write('M1', 'Tiempo de respuesta Ebano', bold)
+            sheet.write('N1', 'Hora solicitud central Bi', bold)
+            sheet.write('O1', 'Hora llegada', bold)
+            sheet.write('P1', 'Tiempo real de respuesta', bold)
+            sheet.write('Q1', 'Excedente de tiempo', bold)
+            sheet.write('R1', 'Retiro', bold)
+            sheet.write('S1', 'Duración del servicio', bold)
+            sheet.write('T1', 'Operador BI', bold)
+            sheet.write('U1', 'Nombre de operador', bold)
+            sheet.write('V1', 'Número de boleta', bold)
+            sheet.write('W1', 'Nombre patrullero', bold)
+            sheet.write('X1', 'Observaciones de servicio', bold)
+            sheet.write('Y1', 'Coordinador a cargo', bold)
+            sheet.write('AA1', 'Área', bold)
+            sheet.write('Z1', 'Descripción', bold)
+
+            for i in self.reportePatrulla:                    
+                if i[26] == self.areaAnalista and self.rolAnalista == "ANALISTA":
+                    incremento = 0
+                    for j in i:
+                        sheet.write(fila, columna + incremento, str(j))
+                        incremento += 1
+                    fila += 1
+                elif self.rolAnalista == "COORDINADOR":
+                    incremento = 0
+                    for j in i:
+                        sheet.write(fila, columna + incremento, str(j))
+                        incremento += 1
+                    fila += 1
+                
+            workbook.close()
         else:  
-            self.reportePatrulla = conexion.conexion().buscarPatrullaFecha(validacion)
+            self.reportePatrulla = conexion.conexion().buscarPatrullaFecha(fecha)
 
             if self.reportePatrulla == []:
-                messagebox.showinfo("Patrullas", "No se coordinaron patrullas en esta fecha: {}".format(validacion))
+                messagebox.showinfo("Patrullas", "No se coordinaron patrullas en esta fecha: {}".format(fecha))
             else:
-                for i in self.reportePatrulla:
-                    print(i)
+                workbook = xlsxwriter.Workbook('patrullaje_'+fecha+'.xlsx')
+                sheet = workbook.add_worksheet()
+
+                bold = workbook.add_format({'bold': True})
+
+                sheet.write('A1', 'No.', bold)
+                sheet.write('B1', 'Fecha', bold)
+                sheet.write('C1', 'Código', bold)
+                sheet.write('D1', 'Centro de costo', bold)
+                sheet.write('E1', 'Punto BI', bold)
+                sheet.write('F1', 'Nombre', bold)
+                sheet.write('G1', 'Dirección', bold)
+                sheet.write('H1', 'Ubicación', bold)
+                sheet.write('I1', 'Motivo', bold)
+                sheet.write('J1', 'Autorizado para abastecimiento', bold)
+                sheet.write('K1', 'Codigo de confirmación (Jefe/Patrullero)', bold)
+                sheet.write('L1', 'Proveedor', bold)
+                sheet.write('M1', 'Tiempo de respuesta Ebano', bold)
+                sheet.write('N1', 'Hora solicitud central Bi', bold)
+                sheet.write('O1', 'Hora llegada', bold)
+                sheet.write('P1', 'Tiempo real de respuesta', bold)
+                sheet.write('Q1', 'Excedente de tiempo', bold)
+                sheet.write('R1', 'Retiro', bold)
+                sheet.write('S1', 'Duración del servicio', bold)
+                sheet.write('T1', 'Operador BI', bold)
+                sheet.write('U1', 'Nombre de operador', bold)
+                sheet.write('V1', 'Número de boleta', bold)
+                sheet.write('W1', 'Nombre patrullero', bold)
+                sheet.write('X1', 'Observaciones de servicio', bold)
+                sheet.write('Y1', 'Coordinador a cargo', bold)
+                sheet.write('Z1', 'Descripción', bold)
+                sheet.write('AA1', 'Área', bold)
+                
+                
+
+                for i in self.reportePatrulla:                    
+                    if i[26] == self.areaAnalista and self.rolAnalista == "ANALISTA":
+                        incremento = 0
+                        for j in i:
+                            sheet.write(fila, columna + incremento, str(j))
+                            incremento += 1
+                        fila += 1
+                    elif self.rolAnalista == "COORDINADOR":
+                        incremento = 0
+                        for j in i:
+                            sheet.write(fila, columna + incremento, str(j))
+                            incremento += 1
+                        fila += 1
+                
+                workbook.close()
 
     def addPatrulla(self):
         if self.txtCodigo.get() == "":  
@@ -393,9 +500,9 @@ class VentanaPatrullaje:
                                                             self.autorizado, self.txtCodigoConfirmacion.get(), self.proveedor, 
                                                             self.tiempoRespuesta, self.txtHoraSolicitud.get(), self.txtHoraLlegada.get(), 
                                                             self.tiempoRealRespuesta, self.excedenteTiempo, self.txtHoraRetiro.get(), 
-                                                            self.duracionServicio, self.nombreAnalista, self.txtNombreOperador.get(), self.txtNumeroBoleta.get(), 
+                                                            self.duracionServicio, self.nombreAnalista,self.txtNombreOperador.get(), self.txtNumeroBoleta.get(), 
                                                             self.txtNombrePatrullero.get(), self.txtObservacionServicio.get(1.0, END+"-1c"), 
-                                                            self.coordinador, self.txtDescripcion.get(1.0, END+"-1c"))
+                                                            self.coordinador, self.txtDescripcion.get(1.0, END+"-1c"), self.areaAnalista)
             self.mostrarPatrullas()
             self.limpiarCampos()
        
@@ -418,17 +525,30 @@ class VentanaPatrullaje:
         self.mPatrulla = conexion.conexion().mostrarPatrulla()
 
         for i in self.mPatrulla:
-            if i[1] == self.fechaPrincipal:
-                #14 -> llegada i[17]-> Retiro #21 -> Numero de Boleta -> Observacion del servicio
-                if i[14] == "" or i[20] == "" or i[21] == "" or i[22] == "" or i[23] == "":
-                    self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('pendiente'))
-                    self.tabla.tag_configure('pendiente', background='#CD6155')
-                elif i[18] == "":
-                    self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('pendienteFinalizacion'))
-                    self.tabla.tag_configure('pendienteFinalizacion', background='#F3883F')
-                else:
-                    self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('finalizados'))
-                    self.tabla.tag_configure('finalizados', background='#52BE80')
+            if i[26] == self.areaAnalista and self.rolAnalista == "ANALISTA":
+                if i[1] == self.fechaPrincipal:
+                    #14 -> llegada i[17]-> Retiro #21 -> Numero de Boleta -> Observacion del servicio
+                    if i[14] == "" or i[20] == "" or i[21] == "" or i[22] == "" or i[23] == "":
+                        self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('pendiente'))
+                        self.tabla.tag_configure('pendiente', background='#CD6155')
+                    elif i[18] == "":
+                        self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('pendienteFinalizacion'))
+                        self.tabla.tag_configure('pendienteFinalizacion', background='#F3883F')
+                    else:
+                        self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('finalizados'))
+                        self.tabla.tag_configure('finalizados', background='#52BE80')
+            elif self.rolAnalista == "COORDINADOR":
+                if i[1] == self.fechaPrincipal:
+                    #14 -> llegada i[17]-> Retiro #21 -> Numero de Boleta -> Observacion del servicio
+                    if i[14] == "" or i[20] == "" or i[21] == "" or i[22] == "" or i[23] == "":
+                        self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('pendiente'))
+                        self.tabla.tag_configure('pendiente', background='#CD6155')
+                    elif i[18] == "":
+                        self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('pendienteFinalizacion'))
+                        self.tabla.tag_configure('pendienteFinalizacion', background='#F3883F')
+                    else:
+                        self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('finalizados'))
+                        self.tabla.tag_configure('finalizados', background='#52BE80')
 
     def limpiarCampos(self):
         self.lblNombreBi['text'] = "Nombre: "
@@ -501,6 +621,7 @@ class VentanaPatrullaje:
 
             self.fechaCordinacion = str(i[1])
             self.txtCodigo.insert(END, i[2])
+            self.nombreBi = str(i[5])
             self.txtCodigoConfirmacion.insert(END, i[10])
             
             self.tiempoRespuesta = str(i[12])
@@ -530,6 +651,8 @@ class VentanaPatrullaje:
             self.txtNombrePatrullero.insert(END, i[22])
             self.txtObservacionServicio.insert(END, i[23])
             self.txtDescripcion.insert(END, i[25])
+
+            self.areaAnalistaAux = str(i[26])
             
         
 
@@ -547,7 +670,7 @@ class VentanaPatrullaje:
 
             self.cantidadPatrullasEliminadas()
             self.iEliminadas += 1
-            self.addDelete = conexion.conexion().addPatrullaEliminada(self.iEliminadas, self.codigoBi, self.nombreBi, validacion)
+            self.addDelete = conexion.conexion().addPatrullaEliminada(self.iEliminadas, self.fechaCordinacion,self.codigoBi, self.nombreBi, validacion, self.areaAnalistaAux)
 
         self.txtCodigoSearch.delete(0, END)
         self.limpiarCampos()
@@ -585,15 +708,26 @@ class VentanaPatrullaje:
 
         if self.txtCodigoSearch.get() != "":
             for i in self.conexion:
-                #14 -> llegada i[17]-> Retiro #21 -> Numero de Boleta -> Observacion del servicio
-                if i[14] == "" or i[17] == "" or i[20] == "" or i[21] == "" or i[22] == "" or i[23] == "":
-                    self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('pendiente'))
-                    self.tabla.tag_configure('pendiente', background='#CD6155')
-                elif i[18] == "" :
-                    self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('pendienteFinalizacion'))
-                    self.tabla.tag_configure('pendienteFinalizacion', background='#F3883F')
-                else:
-                    self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('finalizados'))
-                    self.tabla.tag_configure('finalizados', background='#52BE80')
+                if i[26] == self.areaAnalista and self.rolAnalista == "ANALISTA":
+                    #14 -> llegada i[17]-> Retiro #21 -> Numero de Boleta -> Observacion del servicio
+                    if i[14] == "" or i[17] == "" or i[20] == "" or i[21] == "" or i[22] == "" or i[23] == "":
+                        self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('pendiente'))
+                        self.tabla.tag_configure('pendiente', background='#CD6155')
+                    elif i[18] == "" :
+                        self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('pendienteFinalizacion'))
+                        self.tabla.tag_configure('pendienteFinalizacion', background='#F3883F')
+                    else:
+                        self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('finalizados'))
+                        self.tabla.tag_configure('finalizados', background='#52BE80')
+                elif self.rolAnalista == "COORDINADOR":
+                    if i[14] == "" or i[20] == "" or i[21] == "" or i[22] == "" or i[23] == "":
+                        self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('pendiente'))
+                        self.tabla.tag_configure('pendiente', background='#CD6155')
+                    elif i[18] == "":
+                        self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('pendienteFinalizacion'))
+                        self.tabla.tag_configure('pendienteFinalizacion', background='#F3883F')
+                    else:
+                        self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('finalizados'))
+                        self.tabla.tag_configure('finalizados', background='#52BE80')
         else: 
             self.mostrarPatrullas()

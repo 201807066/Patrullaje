@@ -135,20 +135,20 @@ class conexion:
                     nombreBi, ubicaion, direccionBi, motivo, autorizadoAbas, 
                     codigoConfirmacion, proveedor, tiempoRespuesta, horaSolicitudCentral, horaLlegada, 
                     tiempoRealRespuesta, excedenteTiempo, retiro, duracionServicio, operadorBi, operadorCRC, 
-                    numeroBoleta, nombrePatrullero, observacionServicio, coordinadorCargo,descripcion):
+                    numeroBoleta, nombrePatrullero, observacionServicio, coordinadorCargo,descripcion, areaOperador):
         self.cursor = self.database.cursor()
         sql = '''INSERT INTO patrullaje(No, Fecha, Codigo, CentroCosto, PuntoBi, 
                                         Nombre, Ubicación, Dirección, Motivo, AutorizadoAbastecimiento, 
                                         CodigoConfirmacion, Proveedor, TiempoRespuesta, HoraSolicitudCentral, HoraLlegada,
-                                        TiempoRealRespuesta, ExcedenteTiempo, Retiro, DuracionServicio, OperadorBi,OperadorCRC, 
-                                        NumeroBoleta, NombrePatrullero, ObservacionServicio, CoordinadorCargo, Descripcion)
+                                        TiempoRealRespuesta, ExcedenteTiempo, Retiro, DuracionServicio, OperadorBi, OperadorCRC, 
+                                        NumeroBoleta, NombrePatrullero, ObservacionServicio, CoordinadorCargo, Descripcion, Area)
                 VALUES('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', 
-                        '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')'''.format(
+                        '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')'''.format(
                                                                                         no, fecha, cod, centroCosto, puntoBi,
                                                                                         nombreBi, ubicaion, direccionBi, motivo, autorizadoAbas,
                                                                                         codigoConfirmacion, proveedor, tiempoRespuesta, horaSolicitudCentral, horaLlegada,
                                                                                         tiempoRealRespuesta, excedenteTiempo, retiro, duracionServicio, operadorBi, operadorCRC, 
-                                                                                        numeroBoleta, nombrePatrullero, observacionServicio, coordinadorCargo, descripcion)
+                                                                                        numeroBoleta, nombrePatrullero, observacionServicio, coordinadorCargo, descripcion, areaOperador)
         
         self.cursor.execute(sql)
         self.cursor.fetchall()
@@ -239,10 +239,10 @@ class conexion:
         return resultset
     
     # Tabla de patrullas eliminadas
-    def addPatrullaEliminada(self, no, cod, nombre, motivo):
+    def addPatrullaEliminada(self, no, fecha, cod, nombre, motivo, area):
         self.cursor = self.database.cursor()
 
-        sql = '''INSERT INTO patrullaeliminada(No, Codigo, Nombre, Motivo) VALUES('{}', '{}', '{}', '{}')'''.format(no, cod, nombre, motivo)
+        sql = '''INSERT INTO patrullaeliminada(No, Fecha, Codigo, Nombre, Motivo, Area) VALUES('{}', '{}', '{}', '{}', '{}', '{}')'''.format(no, fecha, cod, nombre, motivo, area)
         
         self.cursor.execute(sql)
         self.cursor.fetchall()

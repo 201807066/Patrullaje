@@ -92,12 +92,14 @@ class login:
                 self.analista = conexion.conexion().buscarAnalista(user, password)
                 for i in self.analista:
                     nombreAnalista = i[1]
+                    areaAnalista = i[5]
+                    rolAnalista = i[4]
 
                 if(len(self.analista)!=0):
                     self.textUsuario.delete('0', 'end')
                     self.textContraseña.delete('0', 'end')
 
-                    self.patrullaje = ventanaPatrullaje.VentanaPatrullaje(self.ventana, nombreAnalista, self.cbxCoordinador.get()).mostrarVentana()
+                    self.patrullaje = ventanaPatrullaje.VentanaPatrullaje(self.ventana, nombreAnalista, self.cbxCoordinador.get(), areaAnalista, rolAnalista).mostrarVentana()
 
                     
                 else:

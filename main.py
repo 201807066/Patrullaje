@@ -5,14 +5,14 @@ from ventanas import login as login
 
 def main():
     #inicio = ventana
-    ventana.VentanaPatrullaje().mostrarVentana()
+    #ventana.VentanaPatrullaje().mostrarVentana()
 
     #v.admonUsuarios().ventanaUsuario()
 
 
     #Llamar a login
     ##inicio = login
-    ##login.login().muestraVentana()
+    login.login().muestraVentana()
 
 
 if __name__ == "__main__":
