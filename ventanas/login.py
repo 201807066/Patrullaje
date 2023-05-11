@@ -8,7 +8,8 @@ class login:
     def __init__(self):
         #self.ventana = Toplevel(VentanaPatrullaje)
         self.ventana = Tk()
-        self.ventana.title("Inicio de sesión administrador")
+        self.ventana.protocol("WM_DELETE_WINDOW", self.cancelar)
+        self.ventana.title("Inicio de sesión")
         #self.ventana.resizable(0, 0)
         self.ventana.eval('tk::PlaceWindow . center')
         self.ventana.geometry("385x300")
@@ -72,6 +73,7 @@ class login:
         self.ventana.mainloop()
 
 
+
     def inicioSesion(self):
         user = self.textUsuario.get()
         password = self.textContraseña.get()
@@ -79,11 +81,11 @@ class login:
 
         if(user == "" or password == ""):
               messagebox.showerror("Campos vacios", "Campos usuario o contraseña vacios")  
-        elif(user=="a" and password=="a"):
-            self.minimizaVentana()
+        elif(user=="admin" and password=="monitoreo"):
             self.administrador = administrarUsuarios.admonUsuarios(self.ventana).ventanaUsuario()
-            self.textUsuario.delete('0', 'end')
-            self.textContraseña.delete('0', 'end')
+            self.textUsuario.delete(0, END)
+            self.textContraseña.delete(0, END)
+            self.minimizaVentana()
         else:
 
             if(self.cbxCoordinador.get() == ""):
@@ -100,20 +102,15 @@ class login:
                     self.textContraseña.delete('0', 'end')
 
                     self.patrullaje = ventanaPatrullaje.VentanaPatrullaje(self.ventana, nombreAnalista, self.cbxCoordinador.get(), areaAnalista, rolAnalista).mostrarVentana()
+                    self.textUsuario.delete(0, END)
+                    self.textContraseña.delete(0, END) 
+                    self.minimizaVentana()                   
 
                     
                 else:
                     messagebox.showerror("Datos erroneos", "Campos usuario o contraseña incorrectos") 
                     
-       
-             
-
-            
-        
-        #self.ventana.withdraw()
-        #self.analistas = administrarUsuarios.admonUsuarios(self.ventana).ventanaUsuario()
-
-    
+           
     def coordinadorBi(self):
         coordinadores = []
 
