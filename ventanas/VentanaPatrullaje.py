@@ -78,7 +78,7 @@ class VentanaPatrullaje:
 
         self.menuArchivo.add_command(label = "Reporte", command=self.reportesPatrullaje)
         self.menuArchivo.add_command(label = "Eliminados", command=self.reportesEliminados)
-        self.menuArchivo.add_command(label="Cerrar Sesión", command=self.ventana.destroy)
+        self.menuArchivo.add_command(label="Cerrar Sesión", command=self.on_closing)
 
         self.barraMenu.add_cascade(menu=self.menuArchivo, label="Archivo")
         self.ventana.config(menu=self.barraMenu)
@@ -214,6 +214,22 @@ class VentanaPatrullaje:
         self.ventana.bind("<F5>", self.searchPatrulla)
 
     def on_closing(self):
+        patrullasPendientes = 0
+        patrullasEnProceso = 0
+        patrullasFinalizadas = 0
+        estadoPatrulla = []
+
+        for i in self.tabla.tag_has('pendiente'):
+            patrullasPendientes += 1
+
+        for j in self.tabla.tag_has('pendienteFinalizacion'):
+            patrullasEnProceso += 1
+
+        for k in self.tabla.tag_has('finalizados'):
+            patrullasFinalizadas += 1
+
+        messagebox.showinfo("Resumen", "Patrullas pendientes: " + str(patrullasPendientes) + "\nPatrullas en proceso: " + str(patrullasEnProceso) + "\nPatrullas finalizadas: " + str(patrullasFinalizadas))
+    
         self.ventana.destroy()
 
     def mostrarVentana(self):
@@ -762,24 +778,24 @@ class VentanaPatrullaje:
             for i in self.conexion:
                 if i[26] == self.areaAnalista and self.rolAnalista == "ANALISTA":
                     #14 -> llegada i[17]-> Retiro #21 -> Numero de Boleta -> Observacion del servicio
-                    if i[14] == "" or i[17] == "" or i[20] == "" or i[21] == "" or i[22] == "" or i[23] == "":
-                        self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('pendiente'))
+                    if i[14] == "" or i[20] == "" or i[21] == "" or i[22] == "" or i[23] == "":
+                        self.tabla.insert("", 'end', text=i[0], values=(i[1],i[2], i[8], i[19]), tags=('pendiente'))
                         self.tabla.tag_configure('pendiente', background='#CD6155')
                     elif i[18] == "" :
-                        self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('pendienteFinalizacion'))
+                        self.tabla.insert("", 'end', text=i[0], values=(i[1],i[2], i[8], i[19]), tags=('pendienteFinalizacion'))
                         self.tabla.tag_configure('pendienteFinalizacion', background='#F3883F')
                     else:
-                        self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('finalizados'))
+                        self.tabla.insert("", 'end', text=i[0], values=(i[1],i[2], i[8], i[19]), tags=('finalizados'))
                         self.tabla.tag_configure('finalizados', background='#52BE80')
                 elif self.rolAnalista == "COORDINADOR":
                     if i[14] == "" or i[20] == "" or i[21] == "" or i[22] == "" or i[23] == "":
-                        self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('pendiente'))
+                        self.tabla.insert("", 'end', text=i[0], values=(i[1],i[2], i[8], i[19]), tags=('pendiente'))
                         self.tabla.tag_configure('pendiente', background='#CD6155')
                     elif i[18] == "":
-                        self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('pendienteFinalizacion'))
+                        self.tabla.insert("", 'end', text=i[0], values=(i[1],i[2], i[8], i[19]), tags=('pendienteFinalizacion'))
                         self.tabla.tag_configure('pendienteFinalizacion', background='#F3883F')
                     else:
-                        self.tabla.insert("", 'end', text=i[0], values=(i[2], i[8], i[19]), tags=('finalizados'))
+                        self.tabla.insert("", 'end', text=i[0], values=(i[1],i[2], i[8], i[19]), tags=('finalizados'))
                         self.tabla.tag_configure('finalizados', background='#52BE80')
         else: 
             self.mostrarPatrullas()
