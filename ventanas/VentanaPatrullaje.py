@@ -336,6 +336,9 @@ class VentanaPatrullaje:
                 self.txtHoraSolicitud.insert(0, datetime.datetime.now().strftime("%H:%M"))
 
     def informacioPuntoBi(self):
+        self.duracionServicio = ""
+        self.tiempoRealRespuesta = ""
+        self.excedenteTiempo = ""
 
         horaActualAux = datetime.datetime.now().strftime("%H:%M")
         tiempoRealRespuestaAux = ""
@@ -361,7 +364,7 @@ class VentanaPatrullaje:
                 if self.txtHoraLlegada.get() == "":
                     duracionServicioAux = "Patrullero aun no ha llegado al punto de servicio Bi"
             elif self.txtHoraLlegada.get() != "" and self.txtHoraRetiro.get() == "":
-                duracionServicioAux = str(self.restarHoras(horaActualAux, self.txtHoraLlegada.get()))
+                duracionServicioAux = str(self.restarHorasFinalizacion(horaActualAux, self.txtHoraLlegada.get()))
 
         for i in self.conexion:
             puntoBi = i[3]
@@ -556,7 +559,7 @@ class VentanaPatrullaje:
                     self.excedenteTiempo = "00:00:00"
 
                 if self.txtHoraRetiro.get() != "":             
-                    self.duracionServicio = str(self.restarHoras(self.txtHoraRetiro.get(), self.txtHoraLlegada.get()))
+                    self.duracionServicio = str(self.restarHorasFinalizacion(self.txtHoraRetiro.get(), self.txtHoraLlegada.get()))
                 
 
         
@@ -599,7 +602,7 @@ class VentanaPatrullaje:
                     if i[14] == "" or i[20] == "" or i[21] == "" or i[22] == "" or i[23] == "":
                         self.tabla.insert("", 'end', text=i[0], values=(i[1],i[2], i[8], i[19]), tags=('pendiente'))
                         self.tabla.tag_configure('pendiente', background='#CD6155')
-                    elif i[18] == "":
+                    elif i[18] == "" or i[17] == "0:00:00" or i[17] == "00:00:00" or i[17] == "0:00" or i[17] == "00:00" or i[17] == "":
                         self.tabla.insert("", 'end', text=i[0], values=(i[1],i[2], i[8], i[19]), tags=('pendienteFinalizacion'))
                         self.tabla.tag_configure('pendienteFinalizacion', background='#F3883F')
                     else:
@@ -611,7 +614,7 @@ class VentanaPatrullaje:
                     if i[14] == "" or i[20] == "" or i[21] == "" or i[22] == "" or i[23] == "":
                         self.tabla.insert("", 'end', text=i[0], values=(i[1],i[2], i[8], i[19]), tags=('pendiente'))
                         self.tabla.tag_configure('pendiente', background='#CD6155')
-                    elif i[18] == "":
+                    elif i[18] == "" or i[17] == "0:00:00" or i[17] == "00:00:00" or i[17] == "0:00" or i[17] == "00:00" or i[17] == "":
                         self.tabla.insert("", 'end', text=i[0], values=(i[1],i[2], i[8], i[19]), tags=('pendienteFinalizacion'))
                         self.tabla.tag_configure('pendienteFinalizacion', background='#F3883F')
                     else:
@@ -639,7 +642,11 @@ class VentanaPatrullaje:
 
     def editarPatrulla(self):
 
-        if self.txtHoraLlegada.get()!="": 
+        self.duracionServicio = ""
+        self.tiempoRealRespuesta = ""
+        self.excedenteTiempo = ""
+
+        if self.txtHoraLlegada.get()!="":
             self.tiempoRealRespuesta = str(self.restarHoras(self.txtHoraLlegada.get(), self.txtHoraSolicitud.get()))
             
             #Se calcula el tiempo de excedente de la patrualla
@@ -648,8 +655,8 @@ class VentanaPatrullaje:
             if self.excedenteTiempo < "00:00:00":
                self.excedenteTiempo = "00:00:00"
 
-            if self.txtHoraRetiro.get() != "":             
-                self.duracionServicio = str(self.restarHoras(self.txtHoraRetiro.get(), self.txtHoraLlegada.get()))
+            if self.txtHoraRetiro.get() != "":   
+                self.duracionServicio = str(self.restarHorasFinalizacion(self.txtHoraRetiro.get(), self.txtHoraLlegada.get()))
 
         self.editPatrulla = conexion.conexion().editarDatosPatrulla(self.no, self.codigoBi, 
                                                                     self.cbxMotivo.get(), self.txtCodigoConfirmacion.get(),
@@ -758,11 +765,29 @@ class VentanaPatrullaje:
 
             self.iEliminadas = patrullaAux[0]
 
-    def restarHoras(self, hora1, hora2):
-        hora1 = datetime.datetime.strptime(hora1, "%H:%M")
-        hora2 = datetime.datetime.strptime(hora2, "%H:%M")
-        resta = hora1 - hora2
+    def restarHoras(self, finalizacion, inicio):
+        finalizacion = datetime.datetime.strptime(finalizacion, "%H:%M")
+        inicio = datetime.datetime.strptime(inicio, "%H:%M")
+        resta = finalizacion - inicio
         return resta
+    
+    def restarHorasFinalizacion(self, finalizacion, inicio):
+        finalizacion = datetime.datetime.strptime(finalizacion, "%H:%M")
+        inicio = datetime.datetime.strptime(inicio, "%H:%M")
+        resta = finalizacion - inicio
+
+        diferencia_horas = str(resta.seconds // 3600)
+        diferencia_minutos = str((resta.seconds // 60) % 60)
+
+        if len(diferencia_horas) == 1:
+            diferencia_horas = "0" + diferencia_horas
+        if len(diferencia_minutos) == 1:
+            diferencia_minutos = "0" + diferencia_minutos
+
+
+
+        restaHoras = diferencia_horas + ":" + diferencia_minutos
+        return restaHoras
 
     #Buscar patrulla por codigo
     def searchPatrulla(self, event):
@@ -781,7 +806,7 @@ class VentanaPatrullaje:
                     if i[14] == "" or i[20] == "" or i[21] == "" or i[22] == "" or i[23] == "":
                         self.tabla.insert("", 'end', text=i[0], values=(i[1],i[2], i[8], i[19]), tags=('pendiente'))
                         self.tabla.tag_configure('pendiente', background='#CD6155')
-                    elif i[18] == "" :
+                    elif i[18] == "" or i[17] == "0:00:00" or i[17] == "00:00:00" or i[17] == "0:00" or i[17] == "00:00" or i[17] == "":
                         self.tabla.insert("", 'end', text=i[0], values=(i[1],i[2], i[8], i[19]), tags=('pendienteFinalizacion'))
                         self.tabla.tag_configure('pendienteFinalizacion', background='#F3883F')
                     else:
@@ -791,7 +816,7 @@ class VentanaPatrullaje:
                     if i[14] == "" or i[20] == "" or i[21] == "" or i[22] == "" or i[23] == "":
                         self.tabla.insert("", 'end', text=i[0], values=(i[1],i[2], i[8], i[19]), tags=('pendiente'))
                         self.tabla.tag_configure('pendiente', background='#CD6155')
-                    elif i[18] == "":
+                    elif i[18] == "" or i[17] == "0:00:00" or i[17] == "00:00:00" or i[17] == "0:00" or i[17] == "00:00" or i[17] == "":
                         self.tabla.insert("", 'end', text=i[0], values=(i[1],i[2], i[8], i[19]), tags=('pendienteFinalizacion'))
                         self.tabla.tag_configure('pendienteFinalizacion', background='#F3883F')
                     else:
