@@ -133,20 +133,20 @@ class conexion:
         self.database.close()
 
     def addPatrulla(self, no, fecha, cod, centroCosto, puntoBi, 
-                    nombreBi, ubicaion, direccionBi, motivo, autorizadoAbas, 
+                    nombreBi, direccionBi, ubicaion, motivo, autorizadoAbas, 
                     codigoConfirmacion, proveedor, tiempoRespuesta, horaSolicitudCentral, horaLlegada, 
                     tiempoRealRespuesta, excedenteTiempo, retiro, duracionServicio, operadorBi, operadorCRC, 
                     numeroBoleta, nombrePatrullero, observacionServicio, coordinadorCargo,descripcion, areaOperador):
         self.cursor = self.database.cursor()
         sql = '''INSERT INTO patrullaje(No, Fecha, Codigo, CentroCosto, PuntoBi, 
-                                        Nombre, Ubicación, Dirección, Motivo, AutorizadoAbastecimiento, 
+                                        Nombre, Dirección, Ubicación, Motivo, AutorizadoAbastecimiento, 
                                         CodigoConfirmacion, Proveedor, TiempoRespuesta, HoraSolicitudCentral, HoraLlegada,
                                         TiempoRealRespuesta, ExcedenteTiempo, Retiro, DuracionServicio, OperadorBi, OperadorCRC, 
                                         NumeroBoleta, NombrePatrullero, ObservacionServicio, CoordinadorCargo, Descripcion, Area)
                 VALUES('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', 
                         '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')'''.format(
                                                                                         no, fecha, cod, centroCosto, puntoBi,
-                                                                                        nombreBi, ubicaion, direccionBi, motivo, autorizadoAbas,
+                                                                                        nombreBi, direccionBi, ubicaion, motivo, autorizadoAbas,
                                                                                         codigoConfirmacion, proveedor, tiempoRespuesta, horaSolicitudCentral, horaLlegada,
                                                                                         tiempoRealRespuesta, excedenteTiempo, retiro, duracionServicio, operadorBi, operadorCRC, 
                                                                                         numeroBoleta, nombrePatrullero, observacionServicio, coordinadorCargo, descripcion, areaOperador)

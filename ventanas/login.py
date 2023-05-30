@@ -10,7 +10,7 @@ class login:
         self.ventana = Tk()
         self.ventana.protocol("WM_DELETE_WINDOW", self.cancelar)
         self.ventana.title("Inicio de sesión")
-        #self.ventana.resizable(0, 0)
+        self.ventana.resizable(False, False)
         self.ventana.eval('tk::PlaceWindow . center')
         self.ventana.geometry("385x300")
 
@@ -82,9 +82,9 @@ class login:
         if(user == "" or password == ""):
               messagebox.showerror("Campos vacios", "Campos usuario o contraseña vacios")  
         elif(user=="admin" and password=="monitoreo"):
-            self.administrador = administrarUsuarios.admonUsuarios(self.ventana).ventanaUsuario()
             self.textUsuario.delete(0, END)
             self.textContraseña.delete(0, END)
+            self.administrador = administrarUsuarios.admonUsuarios(self.ventana).ventanaUsuario()         
             self.minimizaVentana()
         else:
 

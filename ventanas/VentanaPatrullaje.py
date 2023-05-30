@@ -363,8 +363,17 @@ class VentanaPatrullaje:
                     excedenteTiempoAux = "00:00:00"
                 if self.txtHoraLlegada.get() == "":
                     duracionServicioAux = "Patrullero aun no ha llegado al punto de servicio Bi"
+            elif self.txtHoraSolicitud.get() != "" and self.txtHoraLlegada.get() != "":
+                tiempoRealRespuestaAux = str(self.restarHoras(self.txtHoraLlegada.get(), self.txtHoraSolicitud.get()))
+
+                excedenteTiempoAux = str(self.restarHoras(tiempoRealRespuestaAux[:-3], self.tiempoRespuesta[:-3]))
+
+                if excedenteTiempoAux < "00:00:00":
+                    excedenteTiempoAux = "00:00:00"
             elif self.txtHoraLlegada.get() != "" and self.txtHoraRetiro.get() == "":
                 duracionServicioAux = str(self.restarHorasFinalizacion(horaActualAux, self.txtHoraLlegada.get()))
+            elif self.txtHoraLlegada.get() != "" and self.txtHoraRetiro.get() != "":
+                duracionServicioAux = str(self.restarHorasFinalizacion(self.txtHoraRetiro.get(), self.txtHoraLlegada.get()))
 
         for i in self.conexion:
             puntoBi = i[3]
@@ -373,7 +382,9 @@ class VentanaPatrullaje:
             tiempoRespuesta = i[7]
         
 
-        messagebox.showinfo(puntoBi, "Nombre: {} \nDirección: {} \nTiempo de respuesta: {}\n--------------------------------\nFecha de coordinación: {} \nExcedente de tiempo: {}\nDuración del servicio: {}\nÁrea: {}".format(name, direccion, tiempoRespuesta, self.fechaCordinacion, excedenteTiempoAux, duracionServicioAux, self.areaAnalistaAux))
+        messagebox.showinfo(puntoBi, """Nombre: {} \nDirección: {} \nTiempo de respuesta: {}\n--------------------------------\nFecha de coordinación: {} \nExcedente de tiempo: {}\nDuración del servicio: {}\nÁrea: {}"""
+                            .format(name, direccion, tiempoRespuesta, self.fechaCordinacion, 
+                                    excedenteTiempoAux, duracionServicioAux, self.areaAnalistaAux))
         
     def motivosPatrulla(self):
         motivos = []
@@ -560,6 +571,8 @@ class VentanaPatrullaje:
 
                 if self.txtHoraRetiro.get() != "":             
                     self.duracionServicio = str(self.restarHorasFinalizacion(self.txtHoraRetiro.get(), self.txtHoraLlegada.get()))
+                else: 
+                    self.duracionServicio = ""
                 
 
         
@@ -657,6 +670,8 @@ class VentanaPatrullaje:
 
             if self.txtHoraRetiro.get() != "":   
                 self.duracionServicio = str(self.restarHorasFinalizacion(self.txtHoraRetiro.get(), self.txtHoraLlegada.get()))
+            else:
+                self.duracionServicio = ""
 
         self.editPatrulla = conexion.conexion().editarDatosPatrulla(self.no, self.codigoBi, 
                                                                     self.cbxMotivo.get(), self.txtCodigoConfirmacion.get(),
