@@ -162,11 +162,11 @@ class VentanaPatrullaje:
         self.lblObservacionServicio = Label(self.marcoPrincipal, text="Observaciones del servicio")
         self.lblObservacionServicio.config(bg="#dcffff", font=("Comic Sans MS", 12, "bold"), foreground="#0e326e")
         self.txtObservacionServicio = Text(self.marcoPrincipal)
-        self.txtObservacionServicio.config(bg="#F4F4F4", font=("Comic Sans MS", 12), height = 13, width = 40)
+        self.txtObservacionServicio.config(bg="#F4F4F4", font=("Comic Sans MS", 12), height = 13, width = 40, wrap=WORD)
         self.lblDescripcion = Label(self.marcoPrincipal, text="Descripción")
         self.lblDescripcion.config(bg="#dcffff", font=("Comic Sans MS", 12, "bold"), foreground="#0e326e")
         self.txtDescripcion = Text(self.marcoPrincipal)
-        self.txtDescripcion.config(bg="#F4F4F4", font=("Comic Sans MS", 12), height = 8, width = 40)
+        self.txtDescripcion.config(bg="#F4F4F4", font=("Comic Sans MS", 12), height = 8, width = 40, wrap=WORD)
 
         self.btnEliminar = Button(self.marcoPrincipal, text="Eliminar", command=self.eliminarPatrulla)
         self.btnEliminar.config(bg="#3266B4", foreground="white", width=7, font=("Comic Sans MS", 12))
@@ -370,10 +370,10 @@ class VentanaPatrullaje:
 
                 if excedenteTiempoAux < "00:00:00":
                     excedenteTiempoAux = "00:00:00"
-            elif self.txtHoraLlegada.get() != "" and self.txtHoraRetiro.get() == "":
-                duracionServicioAux = str(self.restarHorasFinalizacion(horaActualAux, self.txtHoraLlegada.get()))
-            elif self.txtHoraLlegada.get() != "" and self.txtHoraRetiro.get() != "":
-                duracionServicioAux = str(self.restarHorasFinalizacion(self.txtHoraRetiro.get(), self.txtHoraLlegada.get()))
+                elif self.txtHoraRetiro.get() == "":
+                    duracionServicioAux = str(self.restarHorasFinalizacion(horaActualAux, self.txtHoraLlegada.get()))
+                elif self.txtHoraRetiro.get() != "":
+                    duracionServicioAux = str(self.restarHorasFinalizacion(self.txtHoraRetiro.get(), self.txtHoraLlegada.get()))
 
         for i in self.conexion:
             puntoBi = i[3]

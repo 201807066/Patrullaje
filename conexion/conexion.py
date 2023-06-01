@@ -8,9 +8,11 @@ class conexion:
             user ="root", 
             password ="1234", 
             database = "bdpruebapatrullaje",
-            pool_size = 10
+            pool_size = 10,
         )
 
+
+    #Tabla de usuarios
     def buscarPuntoBi(self, codigo):
         self.cursor = self.database.cursor()
         sql = '''SELECT * FROM datosbi WHERE Cod = "{}"; '''.format(codigo)
