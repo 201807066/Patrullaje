@@ -5,6 +5,8 @@ import datetime
 from conexion import conexion
 import xlsxwriter
 
+from concurrent.futures import ThreadPoolExecutor
+
 
 class VentanaPatrullaje:
 
@@ -24,6 +26,9 @@ class VentanaPatrullaje:
         self.fechaPrincipal = str(fecha.day) +"-"+ str(fecha.month) +"-"+ str(fecha.year)
         self.opc = IntVar()
 
+        #**************************************************************************************************************
+        self.tablaAux = []
+        #**************************************************************************************************************
         #Datos de usuario login
         #self.usuario = user
         self.coordinador = coordinador
@@ -49,6 +54,7 @@ class VentanaPatrullaje:
         self.autorizado = StringVar()
         self.proveedor = "Ebano"
         self.tiempoRespuesta = StringVar()
+        self.tiempoRespuestaAbasto = StringVar()
         self.tiempoRealRespuesta = ""
         self.excedenteTiempo = ""
         self.retiro = StringVar()
@@ -213,6 +219,8 @@ class VentanaPatrullaje:
         #self.ventana.bind("<F3>", self.eliminarPatrulla)
         self.ventana.bind("<F5>", self.searchPatrulla)
 
+
+
     def on_closing(self):
         patrullasPendientes = 0
         patrullasEnProceso = 0
@@ -299,6 +307,7 @@ class VentanaPatrullaje:
         self.motivosPatrulla()
         self.mostrarPatrullas()
         self.ventana.mainloop()
+
     #Se obtienen las variables de la ventana de patrullaje
     
     def buscarPuntoBi(self, event):
@@ -317,13 +326,14 @@ class VentanaPatrullaje:
                 self.ubicacion = i[5]
                 self.direccion = i[6]
                 self.tiempoRespuesta = i[7]
-                self.autorizado = i[9]
+                self.tiempoRespuestaAbasto = i[8]
+                self.autorizado = i[10]
 
 
-                if i[9] == "SI":
+                if i[10] == "SI":
                     self.lblAutorizadoSINO['text'] = "SI"
                     self.lblAutorizadoSINO.config(fg="#008000", font=("Comic Sans MS", 15, 'bold'))
-                elif i[9] == "NO":
+                elif i[10] == "NO":
                     self.lblAutorizadoSINO['text'] = "NO"
                     self.lblAutorizadoSINO.config(fg="#cc0605", font=("Comic Sans MS", 15, 'bold'))
                 else:
@@ -336,9 +346,6 @@ class VentanaPatrullaje:
                 self.txtHoraSolicitud.insert(0, datetime.datetime.now().strftime("%H:%M"))
 
     def informacioPuntoBi(self):
-        self.duracionServicio = ""
-        self.tiempoRealRespuesta = ""
-        self.excedenteTiempo = ""
 
         horaActualAux = datetime.datetime.now().strftime("%H:%M")
         tiempoRealRespuestaAux = ""
@@ -380,10 +387,11 @@ class VentanaPatrullaje:
             name = i[4]
             direccion = i[6]
             tiempoRespuesta = i[7]
+            tiempoRespuestaAbasto = i[8]
         
 
-        messagebox.showinfo(puntoBi, """Nombre: {} \nDirección: {} \nTiempo de respuesta: {}\n--------------------------------\nFecha de coordinación: {} \nExcedente de tiempo: {}\nDuración del servicio: {}\nÁrea: {}"""
-                            .format(name, direccion, tiempoRespuesta, self.fechaCordinacion, 
+        messagebox.showinfo(puntoBi, """Nombre: {} \nDirección: {} \nTiempo de respuesta: {}\n Tiempo de respuesta abasto: {}\n--------------------------------\nFecha de coordinación: {} \nExcedente de tiempo: {}\nDuración del servicio: {}\nÁrea: {}"""
+                            .format(name, direccion, tiempoRespuesta, tiempoRespuestaAbasto, self.fechaCordinacion, 
                                     excedenteTiempoAux, duracionServicioAux, self.areaAnalistaAux))
         
     def motivosPatrulla(self):
@@ -544,6 +552,7 @@ class VentanaPatrullaje:
         self.duracionServicio = ""
         self.tiempoRealRespuesta = ""
         self.excedenteTiempo = ""
+        tiempoAux = ""
 
         if self.txtCodigo.get() == "":  
             messagebox.showerror("Error", "Debe ingresar un codigo")
@@ -553,6 +562,81 @@ class VentanaPatrullaje:
             messagebox.showerror("Error", "Debe llenar los campos codigo y motivo")
         elif self.lblNombreBi.cget("text") == "Nombre:":
             messagebox.showerror("Error", "Debe buscar el punto BI")
+        #VALIDACION DE MOTIVO (ABASTO / DISPENSADOR)
+        elif self.cbxMotivo.get() == "ABASTO" or self.cbxMotivo.get() == "FALLA EN DISPENSADOR" and self.tiempoRespuestaAbasto != "N/A":
+            if self.tiempoRespuestaAbasto == "N/A" or self.tiempoRespuestaAbasto == "":
+                self.cantidadPatrullas()
+                self.i += 1
+
+                #Se calcula el tiempo de respuesta en que llego la patrulla
+                if self.txtHoraLlegada.get()=="":
+                    pass
+                else:   
+                    self.tiempoRealRespuesta = str(self.restarHoras(self.txtHoraLlegada.get(), self.txtHoraSolicitud.get()))
+
+                    #Se calcula el tiempo de excedente de la patrualla
+                    self.excedenteTiempo = str(self.restarHoras(self.tiempoRealRespuesta[:-3], self.tiempoRespuesta()[:-3]))
+
+                    if self.excedenteTiempo < "00:00:00":
+                        self.excedenteTiempo = "00:00:00"
+
+                    if self.txtHoraRetiro.get() != "":             
+                        self.duracionServicio = str(self.restarHorasFinalizacion(self.txtHoraRetiro.get(), self.txtHoraLlegada.get()))
+                    else: 
+                        self.duracionServicio = ""
+                    
+
+            
+
+                fecha = datetime.datetime.now()
+                fechaAux = str(fecha.day) +"-"+ str(fecha.month) +"-"+ str(fecha.year) 
+                self.patrulla = conexion.conexion().addPatrulla(self.i, fechaAux, self.codigoBi, self.centroCosto, self.puntoBi, 
+                                                                self.nombreBi, self.ubicacion, self.direccion, self.cbxMotivo.get(), 
+                                                                self.autorizado, self.txtCodigoConfirmacion.get(), self.proveedor, 
+                                                                self.tiempoRespuesta, self.txtHoraSolicitud.get(), self.txtHoraLlegada.get(), 
+                                                                self.tiempoRealRespuesta, self.excedenteTiempo, self.txtHoraRetiro.get(), 
+                                                                self.duracionServicio, self.nombreAnalista,self.txtNombreOperador.get(), self.txtNumeroBoleta.get(), 
+                                                                self.txtNombrePatrullero.get(), self.txtObservacionServicio.get(1.0, END+"-1c"), 
+                                                                self.coordinador, self.txtDescripcion.get(1.0, END+"-1c"), self.areaAnalista)
+                self.mostrarPatrullas()
+                self.limpiarCampos()
+            else:
+                self.cantidadPatrullas()
+                self.i += 1
+
+                #Se calcula el tiempo de respuesta en que llego la patrulla
+                if self.txtHoraLlegada.get()=="":
+                    pass
+                else:   
+                    self.tiempoRealRespuesta = str(self.restarHoras(self.txtHoraLlegada.get(), self.txtHoraSolicitud.get()))
+
+                    #Se calcula el tiempo de excedente de la patrualla
+                    self.excedenteTiempo = str(self.restarHoras(self.tiempoRealRespuesta[:-3],  self.tiempoRespuestaAbasto()[:-3]))
+
+                    if self.excedenteTiempo < "00:00:00":
+                        self.excedenteTiempo = "00:00:00"
+
+                    if self.txtHoraRetiro.get() != "":             
+                        self.duracionServicio = str(self.restarHorasFinalizacion(self.txtHoraRetiro.get(), self.txtHoraLlegada.get()))
+                    else: 
+                        self.duracionServicio = ""
+                        
+
+                
+
+                fecha = datetime.datetime.now()
+                fechaAux = str(fecha.day) +"-"+ str(fecha.month) +"-"+ str(fecha.year) 
+                self.patrulla = conexion.conexion().addPatrulla(self.i, fechaAux, self.codigoBi, self.centroCosto, self.puntoBi, 
+                                                                self.nombreBi, self.ubicacion, self.direccion, self.cbxMotivo.get(), 
+                                                                self.autorizado, self.txtCodigoConfirmacion.get(), self.proveedor, 
+                                                                self.tiempoRespuestaAbasto, self.txtHoraSolicitud.get(), self.txtHoraLlegada.get(), 
+                                                                self.tiempoRealRespuesta, self.excedenteTiempo, self.txtHoraRetiro.get(), 
+                                                                self.duracionServicio, self.nombreAnalista,self.txtNombreOperador.get(), self.txtNumeroBoleta.get(), 
+                                                                self.txtNombrePatrullero.get(), self.txtObservacionServicio.get(1.0, END+"-1c"), 
+                                                                self.coordinador, self.txtDescripcion.get(1.0, END+"-1c"), self.areaAnalista)
+                self.mostrarPatrullas()
+                self.limpiarCampos()
+            
         else:
             self.cantidadPatrullas()
             self.i += 1
@@ -564,7 +648,7 @@ class VentanaPatrullaje:
                 self.tiempoRealRespuesta = str(self.restarHoras(self.txtHoraLlegada.get(), self.txtHoraSolicitud.get()))
 
                 #Se calcula el tiempo de excedente de la patrualla
-                self.excedenteTiempo = str(self.restarHoras(self.tiempoRealRespuesta[:-3], self.tiempoRespuesta[:-3]))
+                self.excedenteTiempo = str(self.restarHoras(self.tiempoRealRespuesta[:-3], self.tiempoRespuesta()[:-3]))
 
                 if self.excedenteTiempo < "00:00:00":
                     self.excedenteTiempo = "00:00:00"
@@ -839,3 +923,14 @@ class VentanaPatrullaje:
                         self.tabla.tag_configure('finalizados', background='#52BE80')
         else: 
             self.mostrarPatrullas()
+
+        for j in self.tabla.tag_has('pendienteFinalizacion'):
+            noAux = self.tabla.item(j)["text"]
+            codigoBiAux = self.tabla.item(j)["values"][1]
+            motivoAux = self.tabla.item(j)["values"][2]
+            analistaAux = self.tabla.item(j)["values"][3]
+            
+            print("No: ", noAux)
+            print("Codigo: ", codigoBiAux)
+            print("Motivo: ", motivoAux)
+            print("Analista: ", analistaAux)
