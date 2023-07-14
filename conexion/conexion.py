@@ -11,6 +11,15 @@ class conexion:
             pool_size = 10,
         )
 
+        #self.database = mysql.connector.connect(
+          #  host ="192.168.206.173",
+           # user ="admin", 
+           # password ="Seguridad.1", 
+            #database = "patrullaje",
+            #pool_size = 10
+
+    
+
 
     #Tabla de usuarios
     def buscarPuntoBi(self, codigo):

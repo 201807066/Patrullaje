@@ -377,10 +377,16 @@ class VentanaPatrullaje:
 
                 if excedenteTiempoAux < "00:00:00":
                     excedenteTiempoAux = "00:00:00"
-                elif self.txtHoraRetiro.get() == "":
-                    duracionServicioAux = str(self.restarHorasFinalizacion(horaActualAux, self.txtHoraLlegada.get()))
-                elif self.txtHoraRetiro.get() != "":
-                    duracionServicioAux = str(self.restarHorasFinalizacion(self.txtHoraRetiro.get(), self.txtHoraLlegada.get()))
+                    if self.txtHoraRetiro.get() == "":
+                        duracionServicioAux = str(self.restarHorasFinalizacion(horaActualAux, self.txtHoraLlegada.get()))
+                    elif self.txtHoraRetiro.get() != "":
+                        duracionServicioAux = str(self.restarHorasFinalizacion(self.txtHoraRetiro.get(), self.txtHoraLlegada.get()))
+                else:
+                    if self.txtHoraRetiro.get() == "":
+                        duracionServicioAux = str(self.restarHorasFinalizacion(horaActualAux, self.txtHoraLlegada.get()))
+                    elif self.txtHoraRetiro.get() != "":
+                        duracionServicioAux = str(self.restarHorasFinalizacion(self.txtHoraRetiro.get(), self.txtHoraLlegada.get()))
+
 
         for i in self.conexion:
             puntoBi = i[3]
@@ -564,7 +570,7 @@ class VentanaPatrullaje:
             messagebox.showerror("Error", "Debe buscar el punto BI")
         #VALIDACION DE MOTIVO (ABASTO / DISPENSADOR)
         elif self.cbxMotivo.get() == "ABASTO" or self.cbxMotivo.get() == "FALLA EN DISPENSADOR" and self.tiempoRespuestaAbasto != "N/A":
-            if self.tiempoRespuestaAbasto == "N/A" or self.tiempoRespuestaAbasto == "":
+            if self.tiempoRespuestaAbasto == "N/A" or self.tiempoRespuestaAbasto == "" or self.tiempoRespuestaAbasto == None: 
                 self.cantidadPatrullas()
                 self.i += 1
 
@@ -751,9 +757,13 @@ class VentanaPatrullaje:
 
             if self.excedenteTiempo < "00:00:00":
                self.excedenteTiempo = "00:00:00"
+            else:
+                messagebox.showinfo("Excedente de tiempo", "La patrulla excedio el tiempo de respuesta en: " + self.excedenteTiempo)
 
             if self.txtHoraRetiro.get() != "":   
                 self.duracionServicio = str(self.restarHorasFinalizacion(self.txtHoraRetiro.get(), self.txtHoraLlegada.get()))
+                if self.duracionServicio > "00:35:00":
+                    messagebox.showinfo("Duracion de servicio", "La duracion del servicio excedio el tiempo permitido")
             else:
                 self.duracionServicio = ""
 
