@@ -468,62 +468,190 @@ class VentanaPatrullaje:
                     fila += 1
                 
             workbook.close()
+
         else:  
             self.reportePatrulla = conexion.conexion().buscarPatrullaFecha(fecha)
 
             if self.reportePatrulla == []:
                 messagebox.showinfo("Patrullas", "No se coordinaron patrullas en esta fecha: {}".format(fecha))
             else:
-                workbook = xlsxwriter.Workbook('patrullaje_'+fecha+'.xlsx')
+                
+                
+                
+                workbook = xlsxwriter.Workbook('patrullaje_'+fecha+ self.areaAnalista + '.xlsx')
                 sheet = workbook.add_worksheet()
+                for i in self.reportePatrulla:      
+                    print(self.areaAnalista)         
+                    if i[26] == self.areaAnalista and self.rolAnalista == "ANALISTA" :
+                        
+                        if self.areaAnalista == "CLAVES":
+                            
 
-                bold = workbook.add_format({'bold': True})
+                            bold = workbook.add_format({'bold': True})
 
-                sheet.write('A1', 'No.', bold)
-                sheet.write('B1', 'Fecha', bold)
-                sheet.write('C1', 'Código', bold)
-                sheet.write('D1', 'Centro de costo', bold)
-                sheet.write('E1', 'Punto BI', bold)
-                sheet.write('F1', 'Nombre', bold)
-                sheet.write('G1', 'Dirección', bold)
-                sheet.write('H1', 'Ubicación', bold)
-                sheet.write('I1', 'Motivo', bold)
-                sheet.write('J1', 'Autorizado para abastecimiento', bold)
-                sheet.write('K1', 'Codigo de confirmación (Jefe/Patrullero)', bold)
-                sheet.write('L1', 'Proveedor', bold)
-                sheet.write('M1', 'Tiempo de respuesta Ebano', bold)
-                sheet.write('N1', 'Hora solicitud central Bi', bold)
-                sheet.write('O1', 'Hora llegada', bold)
-                sheet.write('P1', 'Tiempo real de respuesta', bold)
-                sheet.write('Q1', 'Excedente de tiempo', bold)
-                sheet.write('R1', 'Retiro', bold)
-                sheet.write('S1', 'Duración del servicio', bold)
-                sheet.write('T1', 'Operador BI', bold)
-                sheet.write('U1', 'Nombre de operador', bold)
-                sheet.write('V1', 'Número de boleta', bold)
-                sheet.write('W1', 'Nombre patrullero', bold)
-                sheet.write('X1', 'Observaciones de servicio', bold)
-                sheet.write('Y1', 'Coordinador a cargo', bold)
-                sheet.write('Z1', 'Descripción', bold)
-                sheet.write('AA1', 'Área', bold)
+                            sheet.write('A1', 'No.', bold)
+                            sheet.write('B1', 'Fecha', bold)
+                            sheet.write('C1', 'Código', bold)
+                            sheet.write('D1', 'Centro de costo', bold)
+                            sheet.write('E1', 'Punto BI', bold)
+                            sheet.write('F1', 'Nombre', bold)
+                            sheet.write('G1', 'Dirección', bold)
+                            sheet.write('H1', 'Ubicación', bold)
+                            sheet.write('I1', 'Motivo', bold)
+                            sheet.write('J1', 'Autorizado para abastecimiento', bold)
+                            sheet.write('K1', 'Codigo de confirmación (Jefe/Patrullero)', bold)
+                            sheet.write('L1', 'Proveedor', bold)
+                            sheet.write('M1', 'Tiempo de respuesta Ebano', bold)
+                            sheet.write('N1', 'Hora solicitud central Bi', bold)
+                            sheet.write('O1', 'Hora llegada', bold)
+                            sheet.write('P1', 'Tiempo real de respuesta', bold)
+                            sheet.write('Q1', 'Excedente de tiempo', bold)
+                            sheet.write('R1', 'Retiro', bold)
+                            sheet.write('S1', 'Duración del servicio', bold)
+                            sheet.write('T1', 'Operador BI', bold)
+                            sheet.write('U1', 'Nombre de operador', bold)
+                            sheet.write('V1', 'Número de boleta', bold)
+                            sheet.write('W1', 'Nombre patrullero', bold)
+                            sheet.write('X1', 'Observaciones de servicio', bold)
+                            sheet.write('Y1', 'Coordinador a cargo', bold)
+                            sheet.write('Z1', 'Descripción', bold)
+                            sheet.write('AA1', 'Área', bold)
+
+                            incremento = 0
+                            for j in i:
+                                sheet.write(fila, columna + incremento, str(j))
+                                incremento += 1
+                            fila += 1
+                            
+
+                        else:
+
+                            bold = workbook.add_format({'bold': True})
+
+                            sheet.write('A1', 'No.', bold)
+                            sheet.write('B1', 'Fecha', bold)
+                            sheet.write('C1', 'Código', bold)
+                            sheet.write('D1', 'Centro de costo', bold)
+                            sheet.write('E1', 'Punto BI', bold)
+                            sheet.write('F1', 'Nombre', bold)
+                            sheet.write('G1', 'Dirección', bold)
+                            sheet.write('H1', 'Ubicación', bold)
+                            sheet.write('I1', 'Motivo', bold)
+                            #sheet.write('J1', 'Autorizado para abastecimiento', bold)   9
+                            #sheet.write('K1', 'Codigo de confirmación (Jefe/Patrullero)', bold)   10
+                            sheet.write('J1', 'Proveedor', bold)
+                            sheet.write('K1', 'Tiempo de respuesta Ebano', bold)
+                            sheet.write('L1', 'Hora solicitud central Bi', bold)
+                            sheet.write('M1', 'Hora llegada', bold)
+                            sheet.write('N1', 'Tiempo real de respuesta', bold)
+                            sheet.write('O1', 'Excedente de tiempo', bold)
+                            sheet.write('P1', 'Retiro', bold)
+                            sheet.write('Q1', 'Duración del servicio', bold)
+                            sheet.write('R1', 'Operador BI', bold)
+                            sheet.write('S1', 'Nombre de operador', bold)
+                            sheet.write('T1', 'Número de boleta', bold)
+                            sheet.write('U1', 'Nombre patrullero', bold)
+                            sheet.write('V1', 'Observaciones de servicio', bold)
+                            sheet.write('W1', 'Coordinador a cargo', bold)
+                            sheet.write('X1', 'Descripción', bold)
+                            sheet.write('Y1', 'Área', bold)
+
+                            incremento = 0
+                            for j in i:
+                                if incremento < 9:
+                                    sheet.write(fila, columna + incremento, str(j))
+                                    incremento += 1
+                                elif incremento == 9 or incremento == 10:
+                                    incremento += 1
+                                else:
+                                    sheet.write(fila, columna + incremento - 2, str(j))
+                                    incremento += 1
+                            fila += 1
                 
-                
-
-                for i in self.reportePatrulla:                    
-                    if i[26] == self.areaAnalista and self.rolAnalista == "ANALISTA":
-                        incremento = 0
-                        for j in i:
-                            sheet.write(fila, columna + incremento, str(j))
-                            incremento += 1
-                        fila += 1
                     elif self.rolAnalista == "COORDINADOR":
-                        incremento = 0
-                        for j in i:
-                            sheet.write(fila, columna + incremento, str(j))
-                            incremento += 1
-                        fila += 1
-                
+                        if self.areaAnalista == "CLAVES":
+                            
+                            bold = workbook.add_format({'bold': True})
+                            sheet.write('A1', 'No.', bold)
+                            sheet.write('B1', 'Fecha', bold)
+                            sheet.write('C1', 'Código', bold)
+                            sheet.write('D1', 'Centro de costo', bold)
+                            sheet.write('E1', 'Punto BI', bold)
+                            sheet.write('F1', 'Nombre', bold)
+                            sheet.write('G1', 'Dirección', bold)
+                            sheet.write('H1', 'Ubicación', bold)
+                            sheet.write('I1', 'Motivo', bold)
+                            sheet.write('J1', 'Autorizado para abastecimiento', bold)
+                            sheet.write('K1', 'Codigo de confirmación (Jefe/Patrullero)', bold)
+                            sheet.write('L1', 'Proveedor', bold)
+                            sheet.write('M1', 'Tiempo de respuesta Ebano', bold)
+                            sheet.write('N1', 'Hora solicitud central Bi', bold)
+                            sheet.write('O1', 'Hora llegada', bold)
+                            sheet.write('P1', 'Tiempo real de respuesta', bold)
+                            sheet.write('Q1', 'Excedente de tiempo', bold)
+                            sheet.write('R1', 'Retiro', bold)
+                            sheet.write('S1', 'Duración del servicio', bold)
+                            sheet.write('T1', 'Operador BI', bold)
+                            sheet.write('U1', 'Nombre de operador', bold)
+                            sheet.write('V1', 'Número de boleta', bold)
+                            sheet.write('W1', 'Nombre patrullero', bold)
+                            sheet.write('X1', 'Observaciones de servicio', bold)
+                            sheet.write('Y1', 'Coordinador a cargo', bold)
+                            sheet.write('Z1', 'Descripción', bold)
+                            sheet.write('AA1', 'Área', bold)
+
+                            incremento = 0
+                            for j in i:
+                                sheet.write(fila, columna + incremento, str(j))
+                                incremento += 1
+                            fila += 1
+
+                        else:
+                            
+                            bold = workbook.add_format({'bold': True})
+
+                            sheet.write('A1', 'No.', bold)
+                            sheet.write('B1', 'Fecha', bold)
+                            sheet.write('C1', 'Código', bold)
+                            sheet.write('D1', 'Centro de costo', bold)
+                            sheet.write('E1', 'Punto BI', bold)
+                            sheet.write('F1', 'Nombre', bold)
+                            sheet.write('G1', 'Dirección', bold)
+                            sheet.write('H1', 'Ubicación', bold)
+                            sheet.write('I1', 'Motivo', bold)
+                            #sheet.write('J1', 'Autorizado para abastecimiento', bold)   9
+                            #sheet.write('K1', 'Codigo de confirmación (Jefe/Patrullero)', bold)   10
+                            sheet.write('J1', 'Proveedor', bold)
+                            sheet.write('K1', 'Tiempo de respuesta Ebano', bold)
+                            sheet.write('L1', 'Hora solicitud central Bi', bold)
+                            sheet.write('M1', 'Hora llegada', bold)
+                            sheet.write('N1', 'Tiempo real de respuesta', bold)
+                            sheet.write('O1', 'Excedente de tiempo', bold)
+                            sheet.write('P1', 'Retiro', bold)
+                            sheet.write('Q1', 'Duración del servicio', bold)
+                            sheet.write('R1', 'Operador BI', bold)
+                            sheet.write('S1', 'Nombre de operador', bold)
+                            sheet.write('T1', 'Número de boleta', bold)
+                            sheet.write('U1', 'Nombre patrullero', bold)
+                            sheet.write('V1', 'Observaciones de servicio', bold)
+                            sheet.write('W1', 'Coordinador a cargo', bold)
+                            sheet.write('X1', 'Descripción', bold)
+                            sheet.write('Y1', 'Área', bold)
+
+                            incremento = 0
+                            for j in i:
+                                if incremento < 9:
+                                    sheet.write(fila, columna + incremento, str(j))
+                                    incremento += 1
+                                elif incremento == 9 or incremento == 10:
+                                    incremento += 1
+                                else:
+                                    sheet.write(fila, columna + incremento - 2, str(j))
+                                    incremento += 1
+                            fila += 1
                 workbook.close()
+                
+                
 
     def reportesEliminados(self):
         fila = 1
@@ -705,12 +833,15 @@ class VentanaPatrullaje:
                     if i[14] == "" or i[20] == "" or i[21] == "" or i[22] == "" or i[23] == "":
                         self.tabla.insert("", 'end', text=i[0], values=(i[1],i[2], i[8], i[19]), tags=('pendiente'))
                         self.tabla.tag_configure('pendiente', background='#CD6155')
+                        print("PENDIENTES")
                     elif i[18] == "" or i[17] == "0:00:00" or i[17] == "00:00:00" or i[17] == "0:00" or i[17] == "00:00" or i[17] == "":
                         self.tabla.insert("", 'end', text=i[0], values=(i[1],i[2], i[8], i[19]), tags=('pendienteFinalizacion'))
                         self.tabla.tag_configure('pendienteFinalizacion', background='#F3883F')
+                        print("PENDIENTES FINALIZACION")
                     else:
                         self.tabla.insert("", 'end', text=i[0], values=(i[1],i[2], i[8], i[19]), tags=('finalizados'))
                         self.tabla.tag_configure('finalizados', background='#52BE80')
+                        print("FINALIZADOS")
             elif self.rolAnalista == "COORDINADOR":
                 if i[1] == self.fechaPrincipal:
                     #14 -> llegada i[17]-> Retiro #21 -> Numero de Boleta -> Observacion del servicio
@@ -763,7 +894,7 @@ class VentanaPatrullaje:
             if self.txtHoraRetiro.get() != "":   
                 self.duracionServicio = str(self.restarHorasFinalizacion(self.txtHoraRetiro.get(), self.txtHoraLlegada.get()))
                 if self.duracionServicio > "00:35:00":
-                    messagebox.showinfo("Duracion de servicio", "La duracion del servicio excedio el tiempo permitido")
+                    messagebox.showinfo("Duracion de servicio", "La duracion del servicio excedio 35 minutos, tiempo total: " + self.duracionServicio)
             else:
                 self.duracionServicio = ""
 

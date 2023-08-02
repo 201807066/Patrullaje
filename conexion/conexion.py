@@ -1,3 +1,5 @@
+from mysql.connector.locales.eng import client_error
+import mysql.connector.locales.eng.client_error
 import mysql.connector
 
 class conexion:
@@ -9,14 +11,15 @@ class conexion:
             password ="1234", 
             database = "bdpruebapatrullaje",
             pool_size = 10,
+            auth_plugin='mysql_native_password'
         )
 
-        #self.database = mysql.connector.connect(
-          #  host ="192.168.206.173",
-           # user ="admin", 
-           # password ="Seguridad.1", 
-            #database = "patrullaje",
-            #pool_size = 10
+        """self.database = mysql.connector.connect(
+        host ="192.168.206.173",
+        user ="admin", 
+        password ="Seguridad.1", 
+        database = "patrullaje",
+        pool_size = 10"""
 
     
 
