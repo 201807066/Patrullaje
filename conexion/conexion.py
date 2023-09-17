@@ -21,9 +21,6 @@ class conexion:
         database = "patrullaje",
         pool_size = 10"""
 
-    
-
-
     #Tabla de usuarios
     def buscarPuntoBi(self, codigo):
         self.cursor = self.database.cursor()
@@ -275,3 +272,14 @@ class conexion:
         self.database.close()
 
         return resultset
+    
+    def buscarPatrullaOperador(self, Operador):
+        self.cursor = self.database.cursor()
+        sql = '''SELECT * FROM patrullaje WHERE OperadorBi = "{}" ; '''.format(Operador)
+        self.cursor.execute(sql)
+        resultset = self.cursor.fetchall()
+        self.cursor.close()
+        self.database.commit()
+        self.database.close()
+
+        return resultset  

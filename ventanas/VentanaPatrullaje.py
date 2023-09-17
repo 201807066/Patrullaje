@@ -84,6 +84,10 @@ class VentanaPatrullaje:
 
         self.menuArchivo.add_command(label = "Reporte", command=self.reportesPatrullaje)
         self.menuArchivo.add_command(label = "Eliminados", command=self.reportesEliminados)
+        self.menuArchivo.add_separator()
+        self.menuArchivo.add_command(label = "Reporte por operador", command=self.reporteOperadores)
+        self.menuArchivo.add_command(label = "Reporte por código", command=self.reporteCodigo)
+        self.menuArchivo.add_separator()
         self.menuArchivo.add_command(label="Cerrar Sesión", command=self.on_closing)
 
         self.barraMenu.add_cascade(menu=self.menuArchivo, label="Archivo")
@@ -650,9 +654,7 @@ class VentanaPatrullaje:
                                     incremento += 1
                             fila += 1
                 workbook.close()
-                
-                
-
+                      
     def reportesEliminados(self):
         fila = 1
         columna = 0
@@ -679,6 +681,124 @@ class VentanaPatrullaje:
             fila += 1
         workbook.close()
  
+    def reporteOperadores(self):
+        fila = 1
+        columna = 0
+        analista = ""
+        operador = simpledialog.askstring("Reporte de operador", "¿Patrullas que envio el operador (Corporativo)?")
+
+        if operador == NONE:
+            pass
+        elif operador == "":
+            messagebox.showerror("Error", "Debe agregar un corporativo")
+        else:
+            self.reporteOperadorAux = conexion.conexion().analistasCorpBi(operador)
+            for i in self.reporteOperadorAux:
+                analista = i[1]
+            
+            self.reporteOperador = conexion.conexion().buscarPatrullaOperador(analista)
+
+            if self.reporteOperador == []:
+                messagebox.showinfo("Patrullas", "El operador {} no ha coordinado patrullas.".format(analista))
+            else:
+                workbook = xlsxwriter.Workbook('patrullas_por_'+analista+'.xlsx')
+                sheet = workbook.add_worksheet()
+
+                for i in self.reporteOperador:
+                    bold = workbook.add_format({'bold': True})
+
+                    sheet.write('A1', 'No.', bold)
+                    sheet.write('B1', 'Fecha', bold)
+                    sheet.write('C1', 'Código', bold)
+                    sheet.write('D1', 'Centro de costo', bold)
+                    sheet.write('E1', 'Punto BI', bold)
+                    sheet.write('F1', 'Nombre', bold)
+                    sheet.write('G1', 'Dirección', bold)
+                    sheet.write('H1', 'Ubicación', bold)
+                    sheet.write('I1', 'Motivo', bold)
+                    sheet.write('J1', 'Autorizado para abastecimiento', bold)
+                    sheet.write('L1', 'Proveedor', bold)
+                    sheet.write('K1', 'Codigo de confirmación (Jefe/Patrullero)', bold)
+                    sheet.write('M1', 'Tiempo de respuesta Ebano', bold)
+                    sheet.write('N1', 'Hora solicitud central Bi', bold)
+                    sheet.write('O1', 'Hora llegada', bold)
+                    sheet.write('P1', 'Tiempo real de respuesta', bold)
+                    sheet.write('Q1', 'Excedente de tiempo', bold)
+                    sheet.write('R1', 'Retiro', bold)
+                    sheet.write('S1', 'Duración del servicio', bold)
+                    sheet.write('T1', 'Operador BI', bold)
+                    sheet.write('U1', 'Nombre de operador', bold)
+                    sheet.write('V1', 'Número de boleta', bold)
+                    sheet.write('W1', 'Nombre patrullero', bold)
+                    sheet.write('X1', 'Observaciones de servicio', bold)
+                    sheet.write('Y1', 'Coordinador a cargo', bold)
+                    sheet.write('Z1', 'Descripción', bold)
+                    sheet.write('AA1', 'Área', bold)
+
+                    incremento = 0
+                    for j in i:
+                        sheet.write(fila, columna + incremento, str(j))
+                        incremento += 1
+                    fila += 1
+                workbook.close()
+
+    def reporteCodigo(self):
+        fila = 1
+        columna = 0
+
+        codigo = simpledialog.askstring("Reporte por codigo", "¿Patrullas al punto de servicio Bi?")
+
+        if codigo == NONE:
+            pass
+        elif codigo == "":
+            messagebox.showerror("Error", "Debe agregar el codigo del punto de servicio")
+        else:
+            self.reportePorCodigo = conexion.conexion().searchPatrulla(codigo)
+
+            if self.reportePorCodigo == []:
+                messagebox.showinfo("Patrullas", "No se han enviado patrullas al punto de servicio {}.".format(codigo))
+            else:
+                workbook = xlsxwriter.Workbook('patrullas_enviadas_a_'+codigo+'.xlsx')
+                sheet = workbook.add_worksheet()
+
+                for i in self.reportePorCodigo:
+                    bold = workbook.add_format({'bold': True})
+
+                    sheet.write('A1', 'No.', bold)
+                    sheet.write('B1', 'Fecha', bold)
+                    sheet.write('C1', 'Código', bold)
+                    sheet.write('D1', 'Centro de costo', bold)
+                    sheet.write('E1', 'Punto BI', bold)
+                    sheet.write('F1', 'Nombre', bold)
+                    sheet.write('G1', 'Dirección', bold)
+                    sheet.write('H1', 'Ubicación', bold)
+                    sheet.write('I1', 'Motivo', bold)
+                    sheet.write('J1', 'Autorizado para abastecimiento', bold)
+                    sheet.write('L1', 'Proveedor', bold)
+                    sheet.write('K1', 'Codigo de confirmación (Jefe/Patrullero)', bold)
+                    sheet.write('M1', 'Tiempo de respuesta Ebano', bold)
+                    sheet.write('N1', 'Hora solicitud central Bi', bold)
+                    sheet.write('O1', 'Hora llegada', bold)
+                    sheet.write('P1', 'Tiempo real de respuesta', bold)
+                    sheet.write('Q1', 'Excedente de tiempo', bold)
+                    sheet.write('R1', 'Retiro', bold)
+                    sheet.write('S1', 'Duración del servicio', bold)
+                    sheet.write('T1', 'Operador BI', bold)
+                    sheet.write('U1', 'Nombre de operador', bold)
+                    sheet.write('V1', 'Número de boleta', bold)
+                    sheet.write('W1', 'Nombre patrullero', bold)
+                    sheet.write('X1', 'Observaciones de servicio', bold)
+                    sheet.write('Y1', 'Coordinador a cargo', bold)
+                    sheet.write('Z1', 'Descripción', bold)
+                    sheet.write('AA1', 'Área', bold)
+
+                    incremento = 0
+                    for j in i:
+                        sheet.write(fila, columna + incremento, str(j))
+                        incremento += 1
+                    fila += 1
+                workbook.close()
+    
     #***************************************
 
     def addPatrulla(self):
@@ -889,15 +1009,24 @@ class VentanaPatrullaje:
             if self.excedenteTiempo < "00:00:00":
                self.excedenteTiempo = "00:00:00"
             else:
-                messagebox.showinfo("Excedente de tiempo", "La patrulla excedio el tiempo de respuesta en: " + self.excedenteTiempo)
+                self.btnGuardar["state"] = "disable"
+                respuesta = messagebox.showinfo("Excedente de tiempo", "La patrulla excedio el tiempo de respuesta en: " + self.excedenteTiempo)
+
+                if respuesta == "ok":
+                    self.btnGuardar["state"] = "normal"
+                
 
             if self.txtHoraRetiro.get() != "":   
                 self.duracionServicio = str(self.restarHorasFinalizacion(self.txtHoraRetiro.get(), self.txtHoraLlegada.get()))
                 if self.duracionServicio > "00:35:00":
-                    messagebox.showinfo("Duracion de servicio", "La duracion del servicio excedio 35 minutos, tiempo total: " + self.duracionServicio)
+                    self.btnGuardar["state"] = "disable"
+                    respuesta1 = messagebox.showinfo("Duracion de servicio", "La duracion del servicio excedio 35 minutos, tiempo total: " + self.duracionServicio)                 
+
+                    if respuesta1 == "ok":
+                        self.btnGuardar["state"] = "normal"
             else:
                 self.duracionServicio = ""
-
+        
         self.editPatrulla = conexion.conexion().editarDatosPatrulla(self.no, self.codigoBi, 
                                                                     self.cbxMotivo.get(), self.txtCodigoConfirmacion.get(),
                                                                     self.txtHoraSolicitud.get(), self.txtHoraLlegada.get(), 
