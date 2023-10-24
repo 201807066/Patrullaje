@@ -16,10 +16,11 @@ class VentanaPatrullaje:
         self.login = login
         self.ventana = Toplevel(login)
         self.ventana.protocol("WM_DELETE_WINDOW", self.on_closing)
+        
         #self.ventana = Tk()
         self.ventana.title('Patrullaje Bi')
         self.ventana.resizable(False, False)
-        self.ventana.geometry("1350x650")
+        self.ventana.geometry("1272x475")
 
         #Variables
         fecha = datetime.datetime.now()
@@ -97,33 +98,21 @@ class VentanaPatrullaje:
         #Widgets -----> Apartado 1
         self.marcoPrincipal = Frame(self.ventana)
         self.marcoPrincipal.config(bg="#dcffff", width=1350, height=750)
-        self.lblTitulo = Label(self.marcoPrincipal, text="\t\t\t\tCentral receptora de alarmas" + "\t\t    Fecha: " + self.fechaPrincipal)
+        self.lblTitulo = Label(self.marcoPrincipal, text="\t\t\tCentro de Recepción de Alarmas" + "\t\t\t    " + self.fechaPrincipal)
         self.lblTitulo.config(bg="#325795", width=1350, anchor="w", height=1, font=("Rockwell", 20, 'bold'), foreground="#FFFFFF", relief=RAISED)
 
-        self.marcoTitulo = Frame(self.marcoPrincipal)
-        self.marcoTitulo.config(bg="#325795", width=570, height=85)
-
-
-        self.lblNombreOperadorBi = Label(self.marcoTitulo, text="Hola "+ self.nombreAnalista)
-        self.lblNombreOperadorBi.config(bg="#325795",anchor="w", height=1, font=("Rockwell", 10, 'bold'), foreground="#FFFFFF")
-        self.lblBI = Label(self.marcoTitulo, text="  BI")
-        self.lblBI.config(bg="#325795",anchor="w", height=1, font=("Rockwell", 50, 'bold'), foreground="#FFFFFF")
-        self.lblSeguridad = Label(self.marcoTitulo, text="    </Patrullaje>")
-        self.lblSeguridad.config(bg="#325795",anchor="w", height=1, font=("Rockwell", 30, 'bold'), foreground="#FFFFFF")
-
-
         #Widgets -----> Apartado 2
-        self.lblNombreBi = Label(self.marcoPrincipal, text="Nombre:")
-        self.lblNombreBi.config(bg="#dcffff", font=("Comic Sans MS", 12, 'bold'), foreground="#0e326e")
+        self.lblNombreBi = Label(self.marcoPrincipal, text="Punto de servicio")
+        self.lblNombreBi.config(bg="#dcffff", font=("Comic Sans MS", 12, 'bold'))
         self.lblCodigo = Label(self.marcoPrincipal, text="Código:")
         self.lblCodigo.config(bg="#dcffff", font=("Comic Sans MS", 12))
         self.txtCodigo = Entry(self.marcoPrincipal, textvariable=self.codigo)
-        self.txtCodigo.config(bg="#F4F4F4", font=("Comic Sans MS", 12), width=10)
+        self.txtCodigo.config(bg="#F4F4F4", font=("Comic Sans MS", 12), width=7)
         self.txtCodigo.bind("<Return>", self.buscarPuntoBi)
 
         self.btnDetalles = Button(self.marcoPrincipal, text="Detalles", command=self.informacioPuntoBi)
         self.btnDetalles.config(bg="#3266B4", foreground="white", width=7, font=("Comic Sans MS", 12))
-        self.lblAutorizado = Label(self.marcoPrincipal, text="Autorizado para abastecimiento:")
+        self.lblAutorizado = Label(self.marcoPrincipal, text="Autorizado ABS:")
         self.lblAutorizado.config(bg="#dcffff", font=("Comic Sans MS", 11))
         self.lblAutorizadoSINO = Label(self.marcoPrincipal, text="SI/NO")
         self.lblAutorizadoSINO.config(bg="#dcffff", font=("Comic Sans MS", 15, 'bold'))
@@ -131,7 +120,7 @@ class VentanaPatrullaje:
         self.lblMotivo.config(bg="#dcffff", font=("Comic Sans MS", 12))
         self.cbxMotivo = ttk.Combobox(self.marcoPrincipal, background="#F4F4F4", state="readonly", width=25)
         self.cbxMotivo.config(font=("Comic Sans MS", 12), width=15)
-        self.lblCodigoConfirmacion = Label(self.marcoPrincipal, text="Código de confirmación")
+        self.lblCodigoConfirmacion = Label(self.marcoPrincipal, text="Confirmación")
         self.lblCodigoConfirmacion.config(bg="#dcffff", font=("Comic Sans MS", 12))
         self.txtCodigoConfirmacion = Entry(self.marcoPrincipal, textvariable=self.codigoConfirmacion)
         self.txtCodigoConfirmacion.config(bg="#F4F4F4", font=("Comic Sans MS", 12), width=8)
@@ -141,23 +130,30 @@ class VentanaPatrullaje:
         self.lblHoraSolicitud = Label(self.marcoPrincipal, text="Solicitud CRA")
         self.lblHoraSolicitud.config(bg="#dcffff", font=("Comic Sans MS", 12))
         self.txtHoraSolicitud = Entry(self.marcoPrincipal, textvariable=self.horaSolicitud)
-        self.txtHoraSolicitud.config(bg="#F4F4F4", font=("Comic Sans MS", 12), width=12)
-        self.lblHoraLlegada = Label(self.marcoPrincipal, text="Llegada")
-        self.lblHoraLlegada.config(bg="#dcffff", font=("Comic Sans MS", 12))
-        self.txtHoraLlegada = Entry(self.marcoPrincipal, textvariable=self.horaLlegada)
-        self.txtHoraLlegada.config(bg="#F4F4F4", font=("Comic Sans MS", 12), width=12)     
-        self.lblHoraRetiro = Label(self.marcoPrincipal, text="Retiro")
-        self.lblHoraRetiro.config(bg="#dcffff", font=("Comic Sans MS", 12))
-        self.txtHoraRetiro = Entry(self.marcoPrincipal, textvariable=self.horaRetiro)
-        self.txtHoraRetiro.config(bg="#F4F4F4", font=("Comic Sans MS", 12), width=12)
-        self.lblNota = Label(self.marcoPrincipal, text="** Formato 24 Horas **")
-        self.lblNota.config(bg="#dcffff", font=("Comic Sans MS", 12))
+        self.txtHoraSolicitud.config(bg="#F4F4F4", font=("Comic Sans MS", 12), width=8)
 
-        #Widgets -----> Apartado 4
         self.lblNombreOperador = Label(self.marcoPrincipal, text="Operador")
         self.lblNombreOperador.config(bg="#dcffff", font=("Comic Sans MS", 12))
         self.txtNombreOperador = Entry(self.marcoPrincipal, textvariable=self.nombreOperador)
         self.txtNombreOperador.config(bg="#F4F4F4", font=("Comic Sans MS", 12), width=20)
+
+        self.btnAceptar = Button(self.marcoPrincipal, text="Aceptar", command=self.addPatrulla)
+        self.btnAceptar.config(bg="#3266B4", foreground="white", width=7, font=("Comic Sans MS", 12))
+
+        
+        self.lblHoraLlegada = Label(self.marcoPrincipal, text="Llegada")
+        self.lblHoraLlegada.config(bg="#dcffff", font=("Comic Sans MS", 12))
+        self.txtHoraLlegada = Entry(self.marcoPrincipal, textvariable=self.horaLlegada)
+        self.txtHoraLlegada.config(bg="#F4F4F4", font=("Comic Sans MS", 12), width=8)     
+        self.lblHoraRetiro = Label(self.marcoPrincipal, text="Retiro")
+        self.lblHoraRetiro.config(bg="#dcffff", font=("Comic Sans MS", 12))
+        self.txtHoraRetiro = Entry(self.marcoPrincipal, textvariable=self.horaRetiro)
+        self.txtHoraRetiro.config(bg="#F4F4F4", font=("Comic Sans MS", 12), width=8)
+        self.lblNota = Label(self.marcoPrincipal, text="* Formato 24 Horas *")
+        self.lblNota.config(bg="#dcffff", font=("Comic Sans MS", 9))
+
+        #Widgets -----> Apartado 4
+        
         self.lblNumeroBoleta = Label(self.marcoPrincipal, text="Boleta")
         self.lblNumeroBoleta.config(bg="#dcffff", font=("Comic Sans MS", 12))
         self.txtNumeroBoleta = Entry(self.marcoPrincipal, textvariable=self.numeroBoleta)
@@ -169,31 +165,32 @@ class VentanaPatrullaje:
 
          #Widgets -----> Apartado 5
 
-        self.lblObservacionServicio = Label(self.marcoPrincipal, text="Observaciones del servicio")
-        self.lblObservacionServicio.config(bg="#dcffff", font=("Comic Sans MS", 12, "bold"), foreground="#0e326e")
-        self.txtObservacionServicio = Text(self.marcoPrincipal)
-        self.txtObservacionServicio.config(bg="#F4F4F4", font=("Comic Sans MS", 12), height = 13, width = 40, wrap=WORD)
         self.lblDescripcion = Label(self.marcoPrincipal, text="Descripción")
-        self.lblDescripcion.config(bg="#dcffff", font=("Comic Sans MS", 12, "bold"), foreground="#0e326e")
+        self.lblDescripcion.config(bg="#dcffff", font=("Comic Sans MS", 12))
         self.txtDescripcion = Text(self.marcoPrincipal)
         self.txtDescripcion.config(bg="#F4F4F4", font=("Comic Sans MS", 12), height = 8, width = 40, wrap=WORD)
-
-        self.btnEliminar = Button(self.marcoPrincipal, text="Eliminar", command=self.eliminarPatrulla)
-        self.btnEliminar.config(bg="#3266B4", foreground="white", width=7, font=("Comic Sans MS", 12))
-        self.btnAceptar = Button(self.marcoPrincipal, text="Aceptar", command=self.addPatrulla)
-        self.btnAceptar.config(bg="#3266B4", foreground="white", width=7, font=("Comic Sans MS", 12))
+        self.lblObservacionServicio = Label(self.marcoPrincipal, text="Observaciones")
+        self.lblObservacionServicio.config(bg="#dcffff", font=("Comic Sans MS", 12))
+        self.txtObservacionServicio = Text(self.marcoPrincipal)
+        self.txtObservacionServicio.config(bg="#F4F4F4", font=("Comic Sans MS", 12), height = 4, width = 40, wrap=WORD)
         self.btnGuardar = Button(self.marcoPrincipal, text="Guardar", command=self.editarPatrulla)
         self.btnGuardar.config(bg="#3266B4", foreground="white", width=7, font=("Comic Sans MS", 12))
 
-        self.lblSearchCodigo = Label(self.marcoPrincipal, text="Buscar por código")
+        
+        
+        
+
+        self.lblSearchCodigo = Label(self.marcoPrincipal, text="Código")
         self.lblSearchCodigo.config(bg="#dcffff", font=("Comic Sans MS", 12))
         self.txtCodigoSearch = Entry(self.marcoPrincipal)
-        self.txtCodigoSearch.config(bg="#F4F4F4", font=("Comic Sans MS", 12), width=10)
+        self.txtCodigoSearch.config(bg="#F4F4F4", font=("Comic Sans MS", 12), width=7)
         self.txtCodigoSearch.bind("<Return>", self.searchPatrulla)
 
+        self.lblPatrullasEnviadas = Label(self.marcoPrincipal, text="Patrullas enviadas")
+        self.lblPatrullasEnviadas.config(bg="#dcffff", font=("Comic Sans MS", 12))
         #Creacion de la tabla de patrullas enviadas
         columnas = ('#0', '#1', '#2', '#3')
-        self.tabla = ttk.Treeview(self.marcoPrincipal, height=20,  columns=columnas)
+        self.tabla = ttk.Treeview(self.marcoPrincipal, height=13,  columns=columnas)
         self.tabla.bind("<Double-Button-1>", self.doubleClickTabla)
         self.tabla.column('#0', width=30)       
         self.tabla.heading('#0', text='No', anchor=CENTER)
@@ -206,8 +203,10 @@ class VentanaPatrullaje:
         self.tabla.column('#4', width=80)        
         self.tabla.heading('#4', text='Operador', anchor=CENTER)
 
-        self.lblPatrullasEnviadas = Label(self.marcoPrincipal, text="Patrullas enviadas")
-        self.lblPatrullasEnviadas.config(bg="#dcffff", font=("Comic Sans MS", 12, "bold"), foreground="#0e326e")
+        self.btnEliminar = Button(self.marcoPrincipal, text="Eliminar", command=self.eliminarPatrulla)
+        self.btnEliminar.config(bg="#3266B4", foreground="white", width=7, font=("Comic Sans MS", 12))
+
+        
 
         #separador-----> Apartado 1
         self.separador1v = ttk.Separator(self.marcoPrincipal, orient="vertical")
@@ -221,9 +220,15 @@ class VentanaPatrullaje:
         #self.ventana.bind("<F1>", self.addPatrulla)
         #self.ventana.bind("<F2>", self.editarPatrulla)
         #self.ventana.bind("<F3>", self.eliminarPatrulla)
+        self.btnDetalles.bind("<Return>", self.informacioPuntoBi)
+        self.btnAceptar.bind("<Return>", self.addPatrulla)
+        self.btnGuardar.bind("<Return>", self.editarPatrulla)
+        self.btnEliminar.bind("<Return>", self.eliminarPatrulla)
+
+        self.txtDescripcion.bind("<Tab>", self.on_tab1)
+        self.txtObservacionServicio.bind("<Tab>", self.on_tab2)
+        self.ventana.bind("<F3>", self.addPatrulla)
         self.ventana.bind("<F5>", self.searchPatrulla)
-
-
 
     def on_closing(self):
         patrullasPendientes = 0
@@ -248,72 +253,75 @@ class VentanaPatrullaje:
         self.marcoPrincipal.place (x=0,y=0)
         self.lblTitulo.place(x=0, y=0)
 
-        self.marcoTitulo.place(x=0, y=38)
-        self.lblNombreOperadorBi.place(x=250, y=0)
-        self.lblBI.place(x=0, y=0)
-        self.lblSeguridad.place(x=150, y=20)
+
 
          #Widgets -----> Apartado 2
-        self.lblNombreBi.place(x=10, y=135)
-        self.lblCodigo.place(x=10, y=205)
-        self.txtCodigo.place(x=90, y=205)
-        self.btnDetalles.place(x=210, y=200)
-        self.lblAutorizado.place(x=300, y=175)
-        self.lblAutorizadoSINO.place(x=380, y=225)
-        self.lblMotivo.place(x=125, y=285)
-        self.cbxMotivo.place(x=200, y=285)
-        self.lblCodigoConfirmacion.place(x=100 , y=345)
-        self.txtCodigoConfirmacion.place(x=300, y=345)
+        self.lblCodigo.place(x=10, y=50)
+        self.txtCodigo.place(x=80, y=50)
+        self.btnDetalles.place(x=180, y=45)
+        self.lblNombreBi.place(x=10, y=92)
+        self.lblAutorizado.place(x=310, y=160)
+        self.lblAutorizadoSINO.place(x=350, y=200)
+        self.lblMotivo.place(x=10, y=140)
+        self.cbxMotivo.place(x=80, y=140)
+        self.lblCodigoConfirmacion.place(x=10 , y=190)
+        self.txtCodigoConfirmacion.place(x=155, y=190)
 
-         #Widgets -----> Apartado 3
-        self.lblHoraSolicitud.place(x=80 , y=415)
-        self.txtHoraSolicitud.place(x=80 , y=460)
-        self.lblHoraLlegada.place(x=80 , y=490) 
-        self.txtHoraLlegada.place(x=80 , y=520)
-        self.lblHoraRetiro.place(x=80 , y=550)
-        self.txtHoraRetiro.place(x=80 , y=580)
-        self.lblNota.place(x=50 , y=610)
+        self.lblHoraSolicitud.place(x=10 , y=240)
+        self.txtHoraSolicitud.place(x=155 , y=240)
+        self.lblNombreOperador.place(x=10, y=290)
+        self.txtNombreOperador.place(x=150,y=290)
+
+        self.btnAceptar.place(x=385,y=280)
+
+         #Widgets -----> Apartado 3  415 460
+        
+        self.lblHoraLlegada.place(x=10 , y=360) 
+        self.txtHoraLlegada.place(x=80 , y=360)
+        self.lblHoraRetiro.place(x=10 , y=410)
+        self.txtHoraRetiro.place(x=80 , y=410)
+        self.lblNota.place(x=20 , y=440)
 
         #Widgets -----> Apartado 4
-        self.lblNombreOperador.place(x=325, y=415)
-        self.txtNombreOperador.place(x=325,y=460)
-        self.lblNumeroBoleta.place(x=325, y=490)
-        self.txtNumeroBoleta.place(x=325,y=520)
-        self.lblNombrePatrullero.place(x=325,y=550)
-        self.txtNombrePatrullero.place(x=325,y=580)
+        
+        self.lblNumeroBoleta.place(x=175, y=360)
+        self.txtNumeroBoleta.place(x=265,y=360)
+        self.lblNombrePatrullero.place(x=175,y=410)
+        self.txtNombrePatrullero.place(x=265,y=410)
 
         #Widgets -----> Apartado 5
-        self.lblObservacionServicio.place(x=700,y=50)
-        self.txtObservacionServicio.place(x=588,y=85)
-        self.lblDescripcion.place(x=750,y=400)
-        self.txtDescripcion.place(x=588,y=437)
+        self.lblDescripcion.place(x=505,y=50)
+        self.txtDescripcion.place(x=505,y=85)
+        self.lblObservacionServicio.place(x=505,y=280) 
+        self.txtObservacionServicio.place(x=505,y=315)
+        self.btnGuardar.place(x=825,y=420)
 
-        self.btnEliminar.place(x=1255,y=550)
-        self.btnAceptar.place(x=1100,y=600)
-        self.btnGuardar.place(x=1200,y=600)
+        self.btnEliminar.place(x=1173,y=420)
+        
 
         # ** Creacion de la tabla con los datos de las patrullas enviadas **
-        self.lblSearchCodigo.place(x=1075, y=50)
-        self.txtCodigoSearch.place(x=1225, y=55)
-        self.lblPatrullasEnviadas.place(x=1125, y=90)
-        self.tabla.place(x=1032, y=120)
+        self.lblSearchCodigo.place(x=940, y=50)
+        self.txtCodigoSearch.place(x=1000, y=55)
+        self.lblPatrullasEnviadas.place(x=1050, y=90)
+        self.tabla.place(x=950, y=120)
 
         #Separador -----> Apartado 1
-        self.separador1v.place(relx=0.42, rely=0.052, relheight=1, relwidth=0.002)
-        self.separador2h.place(relx=0, rely=0.525, relheight=0.002, relwidth=0.420)
+        self.separador1v.place(relx=0.36, rely=0.052, relheight=1, relwidth=0.002)
+        self.separador2h.place(relx=0, rely=0.450, relheight=0.002, relwidth=0.36)
 
-        self.separador2v.place(relx=0.21, rely=0.525, relheight=0.4, relwidth=0.002)
-        self.separador3v.place(relx=0.75, rely=0.052, relheight=1, relwidth=0.002)
+        #self.separador2v.place(relx=0.21, rely=0.525, relheight=0.4, relwidth=0.002)
+        self.separador3v.place(relx=0.69, rely=0.052, relheight=1, relwidth=0.002)
 
         self.btnGuardar["state"] = "disable"
         self.btnEliminar["state"] = "disable"
+
+        self.txtCodigo.focus()
 
         self.motivosPatrulla()
         self.mostrarPatrullas()
         self.ventana.mainloop()
 
     #Se obtienen las variables de la ventana de patrullaje
-    
     def buscarPuntoBi(self, event):
         self.conexion = conexion.conexion().buscarPuntoBi(self.codigo.get())
         self.txtHoraSolicitud.delete(0, END)
@@ -344,12 +352,12 @@ class VentanaPatrullaje:
                     self.lblAutorizadoSINO['text'] = "N/A"
                     self.lblAutorizadoSINO.config(fg="#000000", font=("Comic Sans MS", 15, 'bold'))
 
-                self.lblNombreBi['text'] = "Nombre: \t"+i[4]
+                self.lblNombreBi['text'] =i[4]
 
             
                 self.txtHoraSolicitud.insert(0, datetime.datetime.now().strftime("%H:%M"))
 
-    def informacioPuntoBi(self):
+    def informacioPuntoBi(self, event=None):
 
         horaActualAux = datetime.datetime.now().strftime("%H:%M")
         tiempoRealRespuestaAux = ""
@@ -407,7 +415,7 @@ class VentanaPatrullaje:
     def motivosPatrulla(self):
         motivos = []
 
-        self.motivos = conexion.conexion().descripcionMotivo()
+        self.motivos = conexion.conexion().descripcionMotivo(self.areaAnalista)
 
         for i in self.motivos:
             motivos.append(i[1])
@@ -800,8 +808,7 @@ class VentanaPatrullaje:
                 workbook.close()
     
     #***************************************
-
-    def addPatrulla(self):
+    def addPatrulla(self, event=None):
 
         self.duracionServicio = ""
         self.tiempoRealRespuesta = ""
@@ -850,8 +857,8 @@ class VentanaPatrullaje:
                                                                 self.tiempoRespuesta, self.txtHoraSolicitud.get(), self.txtHoraLlegada.get(), 
                                                                 self.tiempoRealRespuesta, self.excedenteTiempo, self.txtHoraRetiro.get(), 
                                                                 self.duracionServicio, self.nombreAnalista,self.txtNombreOperador.get(), self.txtNumeroBoleta.get(), 
-                                                                self.txtNombrePatrullero.get(), self.txtObservacionServicio.get(1.0, END+"-1c"), 
-                                                                self.coordinador, self.txtDescripcion.get(1.0, END+"-1c"), self.areaAnalista)
+                                                                self.txtNombrePatrullero.get(), self.txtDescripcion.get(1.0, END+"-1c"), 
+                                                                self.coordinador, self.txtObservacionServicio.get(1.0, END+"-1c"), self.areaAnalista)
                 self.mostrarPatrullas()
                 self.limpiarCampos()
             else:
@@ -886,8 +893,8 @@ class VentanaPatrullaje:
                                                                 self.tiempoRespuestaAbasto, self.txtHoraSolicitud.get(), self.txtHoraLlegada.get(), 
                                                                 self.tiempoRealRespuesta, self.excedenteTiempo, self.txtHoraRetiro.get(), 
                                                                 self.duracionServicio, self.nombreAnalista,self.txtNombreOperador.get(), self.txtNumeroBoleta.get(), 
-                                                                self.txtNombrePatrullero.get(), self.txtObservacionServicio.get(1.0, END+"-1c"), 
-                                                                self.coordinador, self.txtDescripcion.get(1.0, END+"-1c"), self.areaAnalista)
+                                                                self.txtNombrePatrullero.get(), self.txtDescripcion.get(1.0, END+"-1c"), 
+                                                                self.coordinador, self.txtObservacionServicio.get(1.0, END+"-1c"), self.areaAnalista)
                 self.mostrarPatrullas()
                 self.limpiarCampos()
             
@@ -923,8 +930,8 @@ class VentanaPatrullaje:
                                                             self.tiempoRespuesta, self.txtHoraSolicitud.get(), self.txtHoraLlegada.get(), 
                                                             self.tiempoRealRespuesta, self.excedenteTiempo, self.txtHoraRetiro.get(), 
                                                             self.duracionServicio, self.nombreAnalista,self.txtNombreOperador.get(), self.txtNumeroBoleta.get(), 
-                                                            self.txtNombrePatrullero.get(), self.txtObservacionServicio.get(1.0, END+"-1c"), 
-                                                            self.coordinador, self.txtDescripcion.get(1.0, END+"-1c"), self.areaAnalista)
+                                                            self.txtNombrePatrullero.get(), self.txtDescripcion.get(1.0, END+"-1c"), 
+                                                            self.coordinador, self.txtObservacionServicio.get(1.0, END+"-1c"), self.areaAnalista)
             self.mostrarPatrullas()
             self.limpiarCampos()
        
@@ -994,11 +1001,13 @@ class VentanaPatrullaje:
         self.txtDescripcion.delete(1.0, END)
         #self.txtCodigoSearch.delete(1.0, END)
 
-    def editarPatrulla(self):
+    def editarPatrulla(self, event=None):
 
         self.duracionServicio = ""
         self.tiempoRealRespuesta = ""
         self.excedenteTiempo = ""
+        
+
 
         if self.txtHoraLlegada.get()!="":
             self.tiempoRealRespuesta = str(self.restarHoras(self.txtHoraLlegada.get(), self.txtHoraSolicitud.get()))
@@ -1033,7 +1042,7 @@ class VentanaPatrullaje:
                                                                     self.tiempoRealRespuesta, self.excedenteTiempo,
                                                                     self.txtHoraRetiro.get(), self.duracionServicio, self.txtNombreOperador.get(),
                                                                     self.txtNumeroBoleta.get(), self.txtNombrePatrullero.get(),
-                                                                    self.txtObservacionServicio.get(1.0, END+"-1c"), self.txtDescripcion.get(1.0, END+"-1c"))
+                                                                    self.txtDescripcion.get(1.0, END+"-1c"), self.txtObservacionServicio.get(1.0, END+"-1c"))
         self.txtCodigoSearch.delete(0, END)
         self.limpiarCampos()
         self.mostrarPatrullas()
@@ -1044,6 +1053,7 @@ class VentanaPatrullaje:
     def doubleClickTabla(self, event):
         self.limpiarCampos()
         self.txtCodigoConfirmacion.delete(0, END)
+        self.txtHoraLlegada.focus()
         
         #Agregar los campos para vaciar
         self.btnEliminar["state"] = "normal"
@@ -1093,8 +1103,8 @@ class VentanaPatrullaje:
             self.txtNombreOperador.insert(END, i[20])
             self.txtNumeroBoleta.insert(END, i[21])
             self.txtNombrePatrullero.insert(END, i[22])
-            self.txtObservacionServicio.insert(END, i[23])
-            self.txtDescripcion.insert(END, i[25])
+            self.txtObservacionServicio.insert(END, i[25])
+            self.txtDescripcion.insert(END, i[23])
 
             self.areaAnalistaAux = str(i[26])
             
@@ -1102,9 +1112,7 @@ class VentanaPatrullaje:
 
         #Se agrega en los campos txt 
 
-
-    def eliminarPatrulla(self):
-
+    def eliminarPatrulla(self, event=None):
         validacion = simpledialog.askstring("Eliminar", "¿Motivo del por cual se elimina la patrulla?")
 
         if validacion == None:
@@ -1204,3 +1212,11 @@ class VentanaPatrullaje:
             print("Codigo: ", codigoBiAux)
             print("Motivo: ", motivoAux)
             print("Analista: ", analistaAux)
+
+    def on_tab1(self, event):
+        self.txtObservacionServicio.focus()
+        return 'break'
+    
+    def on_tab2(self, event):
+        self.txtCodigoSearch.focus()
+        return 'break'

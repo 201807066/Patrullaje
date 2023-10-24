@@ -5,6 +5,7 @@ from ventanas import login as login
 
 def main():
     login.login().muestraVentana()
+    #ventana.VentanaPatrullaje().mostrarVentana()
 
 
 if __name__ == "__main__":

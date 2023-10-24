@@ -48,6 +48,8 @@ class login:
         
         #Separador 
         self.separador1h = ttk.Separator(self.marcoLogin, orient="horizontal")
+        self.botonIngresar.bind("<Return>", self.inicioSesion)
+        self.botonCancelar.bind("<Return>", self.cancelar)
 
 
 
@@ -74,14 +76,14 @@ class login:
 
 
 
-    def inicioSesion(self):
+    def inicioSesion(self, event=None):
         user = self.textUsuario.get()
         password = self.textContraseña.get()
         nombreAnalista = ""
 
         if(user == "" or password == ""):
               messagebox.showerror("Campos vacios", "Campos usuario o contraseña vacios")  
-        elif(user=="admin" and password=="monitoreo"):
+        elif(user=="a" and password=="a"):
             self.textUsuario.delete(0, END)
             self.textContraseña.delete(0, END)
             self.administrador = administrarUsuarios.admonUsuarios(self.ventana).ventanaUsuario()         
@@ -122,6 +124,6 @@ class login:
     def minimizaVentana(self):
         self.ventana.iconify()
     
-    def cancelar(self):
+    def cancelar(self, event=None):
         self.ventana.destroy()
 

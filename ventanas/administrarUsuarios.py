@@ -25,7 +25,7 @@ class admonUsuarios:
         self.lblTitulo = Label(self.marco, text="\t\tAdministrador Bi")
         self.lblTitulo.config(bg="#325795", width=40, anchor="w", height=2, font=("Rockwell", 15, 'bold'), foreground="#FFFFFF", relief=RAISED)
 
-        self.lblBCorp = Label(self.marco, text="Buscar por corporativo")
+        self.lblBCorp = Label(self.marco, text="Corporativo")
         self.lblBCorp.config(bg="#FFFFFF", font=("Rockwell", 12))
         self.txtBCorp = Entry(self.marco, textvariable=self.bCorp)
         self.txtBCorp.config(bg="#F4F4F4", font=("Comic Sans MS", 12), width=10)
@@ -61,6 +61,20 @@ class admonUsuarios:
         self.btnEliminar = Button(self.marco, text="Eliminar", command=self.eliminarAnalistas)
         self.btnEliminar.config(bg="#3266B4", foreground="white", width=7, font=("Comic Sans MS", 12))
 
+        self.vopc1 = IntVar()
+        self.vopc2 = IntVar()
+        self.vopc3 = IntVar()
+        #Check por area
+        self.opc1 = Checkbutton(self.marco, text="ALARMAS", variable=self.vopc1, command=lambda: self.actualizar_check(1), height=5, width=10)
+        self.opc1.config(bg="#FFFFFF", font=("Rockwell", 10))
+        self.opc2 = Checkbutton(self.marco, text="CCTV", variable=self.vopc2, command=lambda: self.actualizar_check(2), height=5, width=10)
+        self.opc2.config(bg="#FFFFFF", font=("Rockwell", 10))
+        self.opc3 = Checkbutton(self.marco, text="CLAVES", variable=self.vopc3, command=lambda: self.actualizar_check(3), height=5, width=10)
+        self.opc3.config(bg="#FFFFFF", font=("Rockwell", 10))
+        self.btnBuscarMotivo = Button(self.marco, text="Buscar", command=self.descripcionMotivo)
+        self.btnBuscarMotivo.config(bg="#3266B4", foreground="white", width=6, font=("Comic Sans MS", 12))
+
+
         self.lblMotivoPatrullaje = Label(self.marco, text="Motivos de patrullaje")
         self.lblMotivoPatrullaje.config(bg="#FFFFFF", font=("Rockwell", 16, 'bold'))
         self.lblMotivo = Label(self.marco, text="Motivo: ")
@@ -79,16 +93,12 @@ class admonUsuarios:
         self.btnVolver = Button(self.marco, text="Cerrar Sesion", command=self.volverVentanaPatrullaje)
         self.btnVolver.config(bg="#3266B4", foreground="white", width=15, font=("Comic Sans MS", 12))
 
-        self
-        #separador-----> Apartado 1
         self.separador1h = ttk.Separator(self.marco, orient="horizontal")
-
-
 
     def ventanaUsuario(self):
         self.marco.place(x=0,y=0)
         self.lblTitulo.place(x=0, y=0)
-        self.lblBCorp.place(x=320, y=55)
+        self.lblBCorp.place(x=380, y=55)
         self.txtBCorp.place(x=385, y=80)
         self.lblDatos.place(x=20,y=65)
         self.lblNombre.place(x=20, y=130)
@@ -106,7 +116,14 @@ class admonUsuarios:
         self.btnGuardar.place(x=385, y=170)
         self.btnEliminar.place(x=385, y=220)
 
-        self.lblMotivoPatrullaje.place(x=30,y=370)
+        #Apartado de los motivos
+        self.lblMotivoPatrullaje.place(x=30,y=360)
+         #motivos
+        self.opc1.place(x=20, y=365)
+        self.opc2.place(x=110, y=365) 
+        self.opc3.place(x=190, y=365)
+        self.btnBuscarMotivo.place(x=285, y=390)
+
         self.lblMotivo.place(x=20, y=435)
         self.txtMotivo.place(x=150,y=435)
         self.lblDescripcion.place(x=20, y=475)
@@ -167,32 +184,99 @@ class admonUsuarios:
 
     #Motivos del por cual se enviaron las patrullas CRUD
     def agregarMotivo(self):
-       self.analista = conexion.conexion().buscarMotivo(self.motivo.get())
-       if len(self.analista) == 0:
-            self.addMotivo = conexion.conexion().agregarMotivo(self.motivo.get())
-            self.txtMotivo.delete(0, "end")
-       else:
-           messagebox.showerror("Error en el registro", "Motivo ya registrado en el sistema")
+       
+       
+        if self.vopc1.get() == 1:
+            self.b1  = conexion.conexion().buscarMotivo(self.motivo.get(), "ALARMAS")
+            if len(self.b1) == 0:
+                self.addMotivo = conexion.conexion().agregarMotivo(self.motivo.get(), "ALARMAS")
+                self.txtMotivo.delete(0, "end")
+            else:
+                messagebox.showerror("Error en el registro", "Motivo ya registrado en el sistema")
+        elif self.vopc2.get() == 1:
+            self.b2  = conexion.conexion().buscarMotivo(self.motivo.get(), "CCTV")
+            if len(self.b2) == 0:
+                self.addMotivo = conexion.conexion().agregarMotivo(self.motivo.get(), "CCTV")
+                self.txtMotivo.delete(0, "end")
+            else:
+                messagebox.showerror("Error en el registro", "Motivo ya registrado en el sistema")
+           
+        elif self.vopc3.get() == 1:
+            self.b3  = conexion.conexion().buscarMotivo(self.motivo.get(), "CLAVES")
+            if len(self.b3) == 0:
+                self.addMotivo = conexion.conexion().agregarMotivo(self.motivo.get(), "CLAVES")
+                self.txtMotivo.delete(0, "end")
+            else:
+                messagebox.showerror("Error en el registro", "Motivo ya registrado en el sistema")
+        else:
+            messagebox.showerror("Error en el registro", "Debe seleccionar un área para el registro")
 
     def descripcionMotivo(self):
-        motivos = []
 
-        self.motivos = conexion.conexion().descripcionMotivo()
+        if self.vopc1.get() == 1:
+            motivos = []
 
-        for i in self.motivos:
-            motivos.append(i[1])
-        self.cbxDescripcion["values"] = motivos
+            self.motivos = conexion.conexion().descripcionMotivo("ALARMAS")
+
+            for i in self.motivos:
+                motivos.append(i[1])
+            self.cbxDescripcion["values"] = motivos
+        elif self.vopc2.get() == 1:
+            motivos = []
+
+            self.motivos = conexion.conexion().descripcionMotivo("CCTV")
+
+            for i in self.motivos:
+                motivos.append(i[1])
+            self.cbxDescripcion["values"] = motivos
+        elif self.vopc3.get() == 1:
+            motivos = []
+
+            self.motivos = conexion.conexion().descripcionMotivo("CLAVES")
+
+            for i in self.motivos:
+                motivos.append(i[1])
+            self.cbxDescripcion["values"] = motivos
 
     def eliminarMotivo(self):
-        self.deleteMotivo = conexion.conexion().eliminarMotivo(self.cbxDescripcion.get())
-        self.index = self.cbxDescripcion.current()
-        self.values = self.cbxDescripcion["values"]
+        if self.vopc1.get() == 1:
+            self.deleteMotivo = conexion.conexion().eliminarMotivo(self.cbxDescripcion.get(), "ALARMAS")
+            self.index = self.cbxDescripcion.current()
+            self.values = self.cbxDescripcion["values"]
 
-        self.values = (*self.values[:self.index], *self.values[self.index+1:])
-        self.cbxDescripcion["values"] = self.values
-        messagebox.showinfo("Motivo eliminado", "Se elimino correctamente el motivo de patrullaje")
+            self.values = (*self.values[:self.index], *self.values[self.index+1:])
+            self.cbxDescripcion["values"] = self.values
+            self.cbxDescripcion.set("")
+            messagebox.showinfo("Motivo eliminado", "Se elimino correctamente el motivo de patrullaje")
+        elif self.vopc2.get() == 1:
+            self.deleteMotivo = conexion.conexion().eliminarMotivo(self.cbxDescripcion.get(), "CCTV")
+            self.index = self.cbxDescripcion.current()
+            self.values = self.cbxDescripcion["values"]
 
+            self.values = (*self.values[:self.index], *self.values[self.index+1:])
+            self.cbxDescripcion["values"] = self.values
+            self.cbxDescripcion.set("")
+            messagebox.showinfo("Motivo eliminado", "Se elimino correctamente el motivo de patrullaje")
+        elif self.vopc3.get() == 1:
+            self.deleteMotivo = conexion.conexion().eliminarMotivo(self.cbxDescripcion.get(), "CLAVES")
+            self.index = self.cbxDescripcion.current()
+            self.values = self.cbxDescripcion["values"]
+
+            self.values = (*self.values[:self.index], *self.values[self.index+1:])
+            self.cbxDescripcion["values"] = self.values
+            self.cbxDescripcion.set("")
+            messagebox.showinfo("Motivo eliminado", "Se elimino correctamente el motivo de patrullaje")
 
     def volverVentanaPatrullaje(self):
         self.analistas.destroy()
         
+    def actualizar_check(self, seleccionado):
+        if seleccionado == 1:
+            self.opc2.deselect()
+            self.opc3.deselect()
+        elif seleccionado == 2:
+            self.opc1.deselect()
+            self.opc3.deselect()
+        elif seleccionado == 3:
+            self.opc1.deselect()
+            self.opc2.deselect()

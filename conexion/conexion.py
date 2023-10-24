@@ -100,9 +100,9 @@ class conexion:
         self.database.close()
 
     #Tabla de patrullaje
-    def buscarMotivo(self, motivo):
+    def buscarMotivo(self, motivo, area):
         self.cursor = self.database.cursor()
-        sql = '''SELECT * FROM motivos WHERE MOTIVO = "{}"; '''.format(motivo)
+        sql = '''SELECT * FROM motivos WHERE MOTIVO = "{}" AND AREA = "{}"; '''.format(motivo, area)
         self.cursor.execute(sql)
         resultset = self.cursor.fetchall()
         self.cursor.close()
@@ -111,10 +111,10 @@ class conexion:
 
         return resultset
 
-    def agregarMotivo(self, motivo):
+    def agregarMotivo(self, motivo, areas):
         self.cursor = self.database.cursor()
-        sql = '''INSERT INTO motivos(MOTIVO)
-                 VALUE('{}')'''.format(motivo)
+        sql = '''INSERT INTO motivos(MOTIVO, AREA)
+                 VALUE('{}', '{}')'''.format(motivo, areas)
         
         self.cursor.execute(sql)
         self.cursor.fetchall()
@@ -122,9 +122,9 @@ class conexion:
         self.database.commit()
         self.database.close()
 
-    def descripcionMotivo(self):
+    def descripcionMotivo(self, area):
         self.cursor = self.database.cursor()
-        sql = '''SELECT * FROM motivos; '''
+        sql = '''SELECT * FROM motivos WHERE AREA = "{}"; '''.format(area)
         self.cursor.execute(sql)
         resultset = self.cursor.fetchall()
         self.cursor.close()
@@ -133,9 +133,9 @@ class conexion:
 
         return resultset
     
-    def eliminarMotivo(self, motivo):
+    def eliminarMotivo(self, motivo, area):
         self.cursor = self.database.cursor()
-        sql = '''DELETE FROM motivos WHERE MOTIVO = "{}";'''.format(motivo)
+        sql = '''DELETE FROM motivos WHERE MOTIVO = "{}" AND AREA = "{}";'''.format(motivo, area)
 
         self.cursor.execute(sql)
         self.cursor.fetchall()
